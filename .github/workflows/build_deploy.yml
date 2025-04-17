@@ -1,0 +1,22 @@
+name: Build and Deploy
+on: [push]
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: download changes and build
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            cd /home/tsi/inscriptions/django_inscriptions
+            source ../bin/activate
+            git pull
+            python manage.py makemigrations
+            python manage.py migrate
+            python manage.py collectstatic --noinput
+            supervisorctl restart inscriptions

@@ -157,6 +157,8 @@ class InscriptionView(viewsets.GenericViewSet):
 class InscriptionGroupView(viewsets.ModelViewSet):
     queryset = InscriptionGroup.objects.all()
     serializer_class = InscriptionGroupCreateSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = InscriptionGroupFilter
     # permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=['post'], url_path='register-group')

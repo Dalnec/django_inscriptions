@@ -31,6 +31,7 @@ urlpatterns = [
     path("api/", include("apps.user.routers"), name="user"),
     path("api/", include("apps.person.routers"), name="person"),
     path("api/", include("apps.inscription.routers"), name="inscription"),
-    # path("api/", include("apps.seed.routers"), name="seed"),
+    path("api/", include("apps.seed.routers"), name="seed"),
+    path("api/", include("apps.kenani.routers"), name="kenani"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

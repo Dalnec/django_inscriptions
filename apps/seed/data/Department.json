@@ -1,0 +1,127 @@
+[
+  {
+    "id": "01",
+    "description": "AMAZONAS",
+    "is_disabled": "0"
+  },
+  {
+    "id": "02",
+    "description": "ÁNCASH",
+    "is_disabled": "0"
+  },
+  {
+    "id": "03",
+    "description": "APURIMAC",
+    "is_disabled": "0"
+  },
+  {
+    "id": "04",
+    "description": "AREQUIPA",
+    "is_disabled": "0"
+  },
+  {
+    "id": "05",
+    "description": "AYACUCHO",
+    "is_disabled": "0"
+  },
+  {
+    "id": "06",
+    "description": "CAJAMARCA",
+    "is_disabled": "0"
+  },
+  {
+    "id": "07",
+    "description": "CALLAO",
+    "is_disabled": "0"
+  },
+  {
+    "id": "08",
+    "description": "CUSCO",
+    "is_disabled": "0"
+  },
+  {
+    "id": "09",
+    "description": "HUANCAVELICA",
+    "is_disabled": "0"
+  },
+  {
+    "id": "10",
+    "description": "HUÁNUCO",
+    "is_disabled": "0"
+  },
+  {
+    "id": "11",
+    "description": "ICA",
+    "is_disabled": "0"
+  },
+  {
+    "id": "12",
+    "description": "JUNÍN",
+    "is_disabled": "0"
+  },
+  {
+    "id": "13",
+    "description": "LA LIBERTAD",
+    "is_disabled": "0"
+  },
+  {
+    "id": "14",
+    "description": "LAMBAYEQUE",
+    "is_disabled": "0"
+  },
+  {
+    "id": "15",
+    "description": "LIMA",
+    "is_disabled": "0"
+  },
+  {
+    "id": "16",
+    "description": "LORETO",
+    "is_disabled": "0"
+  },
+  {
+    "id": "17",
+    "description": "MADRE DE DIOS",
+    "is_disabled": "0"
+  },
+  {
+    "id": "18",
+    "description": "MOQUEGUA",
+    "is_disabled": "0"
+  },
+  {
+    "id": "19",
+    "description": "PASCO",
+    "is_disabled": "0"
+  },
+  {
+    "id": "20",
+    "description": "PIURA",
+    "is_disabled": "0"
+  },
+  {
+    "id": "21",
+    "description": "PUNO",
+    "is_disabled": "0"
+  },
+  {
+    "id": "22",
+    "description": "SAN MARTIN",
+    "is_disabled": "0"
+  },
+  {
+    "id": "23",
+    "description": "TACNA",
+    "is_disabled": "0"
+  },
+  {
+    "id": "24",
+    "description": "TUMBES",
+    "is_disabled": "0"
+  },
+  {
+    "id": "25",
+    "description": "UCAYALI",
+    "is_disabled": "0"
+  }
+]

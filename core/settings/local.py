@@ -22,7 +22,15 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 DATABASES = {
-    'default': env.db()
+    'default': env.db(),
+    'externa': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'inscripciones_oficial',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
 
 

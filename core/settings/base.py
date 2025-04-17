@@ -21,6 +21,7 @@ BASE_APPS = [
 ]
 
 LOCAL_APPS = [
+    "apps.kenani",
     "apps.activity",
     "apps.inscription",
     "apps.person",
@@ -74,19 +75,27 @@ AUTH_USER_MODEL = "user.User"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'inscriptionsdb',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        # 'OPTIONS': {
-        #     'options': '-c search_path=comercial'
-        # },
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'inscriptionsdb',
+#         'USER': 'postgres',
+#         'PASSWORD': 'admin',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#         # 'OPTIONS': {
+#         #     'options': '-c search_path=comercial'
+#         # },
+#     },
+#     'externa': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'inscripciones_oficial',
+#         'USER': 'postgres',
+#         'PASSWORD': 'admin',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -126,6 +135,8 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# DATABASE_ROUTERS = ['core.db_routers.ExternalRouter']
 
 REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",

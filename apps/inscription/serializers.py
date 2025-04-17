@@ -21,7 +21,7 @@ class TarifaSerializer(serializers.ModelSerializer):
 
 
 class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
-    people = PersonSerializer(many=True)
+    people = PersonSerializer(many=True, write_only=True)
     voucherfile = serializers.ImageField(required=False)
 
     class Meta:

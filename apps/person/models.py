@@ -51,6 +51,12 @@ class Person(TimeStampedModel):
     def fullname(self):
         return f"{self.names} {self.lastnames}"
     
+    def generate_code(self):
+        latest = Person.objects.order_by('-id').first()
+        next_number = latest.id if latest else 1
+        self.code = f"P{next_number:04d}"
+        self.save()
+    
     # @property
     # def countReturns(self):
     #     return len(self.returned)
