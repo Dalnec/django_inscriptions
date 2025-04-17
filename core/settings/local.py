@@ -10,6 +10,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS  = [
     'https://*api.tsifactur.com',
     'https://*.tsifactur.com',
+    'https://*api.tsi.pe',
+    'https://*.tsi.pe',
     'http://localhost:8000',
 ]
  
@@ -17,17 +19,17 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*api.tsifactur.com',
     'https://*.tsifactur.com',
     'http://localhost:8000',
-    'http://*.nuevacreditsac.com',
-    'https://*.nuevacreditsac.com',
+    'https://*api.tsi.pe',
+    'https://*.tsi.pe',
 ]
 
 DATABASES = {
     'default': env.db(),
     'externa': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'inscripciones_oficial',
+        'NAME': 'oldinscriptionsdb', #'inscripciones_oficial',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': '07712546150990+', #'admin',
         'HOST': 'localhost',
         'PORT': '5432',
     }
