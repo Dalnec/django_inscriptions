@@ -24,7 +24,7 @@ class Tarifa(TimeStampedModel):
 
 
 class InscriptionGroup(TimeStampedModel):
-    vouchergroup = models.CharField(max_length=100)
+    vouchergroup = models.CharField(max_length=100, blank=True, null=True)
     voucherfile = models.ImageField(upload_to='vouchers/', blank=True, null=True)
     voucheramount = models.DecimalField(max_digits=10, decimal_places=2)
     activity = models.ForeignKey('activity.Activity', models.CASCADE, related_name="fk_InscriptionGroupActivity")
@@ -36,6 +36,12 @@ class InscriptionGroup(TimeStampedModel):
         db_table = 'InscriptionGroup'
         verbose_name = "Grupo de Inscripcion"
         verbose_name_plural = "Grupos de Inscripcion"
+    
+    def generate_code(self):
+        latest = InscriptionGroup.objects.order_by('-id').first()
+        next_number = latest.id if latest else 1
+        self.vouchergroup = f"G{next_number:04d}"
+        self.save()
 
 
 class Inscription(TimeStampedModel):
