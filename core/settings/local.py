@@ -13,6 +13,7 @@ CORS_ALLOWED_ORIGINS  = [
     'https://*api.tsi.pe',
     'https://*.tsi.pe',
     'http://localhost:8000',
+    'http://192.168.0.111:5160',
 ]
  
 CSRF_TRUSTED_ORIGINS = [
@@ -21,6 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'https://*api.tsi.pe',
     'https://*.tsi.pe',
+    'http://192.168.0.111:5160',
 ]
 
 DATABASES = {
