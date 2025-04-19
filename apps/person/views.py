@@ -1,3 +1,4 @@
+import requests
 from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -55,6 +56,54 @@ class PersonView(viewsets.GenericViewSet):
             {"message": "No tiene permisos para realizar esta accion"},
             status=status.HTTP_403_FORBIDDEN,
         )
+    
+    @action(detail=False, methods=["get"], url_path="apiclient/(?P<document>[0-9]+)")
+    def apiclient(self, request, document=None):
+        [token, url] = ["98b6cb649290e8ffff6f3041b6f57d2d7e26ee816182052ff88444dd2505b0ce", "https://my.apidev.pro/api"]
+        header = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(token)
+        }
+        
+        if len(document) == 8:
+            url = f'{url}/dni/' + document
+        elif len(document) == 11:
+            url = f'{url}/ruc/' + document
+        else:
+            return  Response({"success": False, "message":f"{document} No es un documento válido"})
+        
+        person = Person.objects.filter(doc_num=document)
+        if person.exists():
+            person = person.first()
+            collector = person.collector
+            return Response({
+                "success": True, 
+                "message":f"{document} ya existe", 
+                "data": {
+                    "created":person.created.strftime("%Y-%m-%d %H:%M:%S"),
+                    "code":person.code,
+                    "doc_num":person.doc_num,
+                    "names":person.names,
+                    "lastnames":person.lastnames,
+                    "gender":person.gender,
+                    "birthday":person.birthday,
+                    "phone":person.phone,
+                    "email":person.email,
+                    "status":person.status,
+                    "kind":person.kind,
+                    "documenttype":person.documenttype,
+                    "church":person.church,
+                    "user":person.user,
+                }
+            })
+            
+        response = requests.get(url, headers=header, verify=False)
+        if response.status_code == 200:
+            return  Response(response.json())
+        elif response.status_code == 404:
+            return  Response({"success": False, "message":"Not Found!"})
+        else:
+            return  Response({"success": False, "message":"Error!"})
 
 @extend_schema(tags=["Church"])
 class ChurchView(viewsets.GenericViewSet):
