@@ -163,6 +163,7 @@ class InscriptionGroupView(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='register-group')
     def register_group(self, request):
+        print(request.data)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             group = serializer.save()

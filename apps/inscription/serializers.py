@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.person.serializers import PersonSerializer
+from drf_extra_fields.fields import Base64ImageField
 from apps.person.models import Person
 from .models import *
 
@@ -22,8 +23,9 @@ class TarifaSerializer(serializers.ModelSerializer):
 
 class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
     people = PersonSerializer(many=True, write_only=True)
-    voucherfile = serializers.ImageField(required=False)
-
+    # voucherfile = serializers.ImageField(required=False)
+    voucherfile = Base64ImageField(required=True)
+    
     class Meta:
         model = InscriptionGroup
         fields = ['activity', 'voucheramount', 'voucherfile', 'vouchergroup', 
@@ -39,7 +41,7 @@ class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
             Inscription.objects.create(
                 group=group,
                 person=person,
-                amount=group.voucheramount,  # o ajustado individualmente si es necesario
+                amount=group.tarifa.price,  # o ajustado individualmente si es necesario
                 status="P",
             )
 

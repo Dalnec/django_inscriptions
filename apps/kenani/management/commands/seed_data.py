@@ -12,7 +12,7 @@ class Command(BaseCommand):
             self.stdout.write("🔄 Iniciando proceso de seed...")
 
             # Actividades
-            newactity = NewActivity.objects.create(
+            newactivity = NewActivity.objects.create(
                 title="Actividad de prueba",
                 description="Descripción de prueba",
                 location="Ubicación de prueba",
@@ -20,6 +20,15 @@ class Command(BaseCommand):
                 end_date="2023-01-02 00:00:00",
                 is_active=True,
             )
+            self.stdout.write(f"✅ Actividad creada: {newactivity.title}")
+
+            # Tarifas
+            tarifas = [ { "id": 1, "description": "GENERAL", "price": 120, "selected": True, }, { "id": 2, "description": "ALIMENTACION Y TALLERES", "price": 90, "selected": True, }, { "id": 3, "description": "HOSPEDAJE Y TALLERES", "price": 60, "selected": True, }, { "id": 4, "description": "4 DÍAS", "price": 110, "selected": True, }, { "id": 5, "description": "3 DÍAS", "price": 80, "selected": True, }, { "id": 6, "description": "2 DÍAS", "price": 50, "selected": True, }, { "id": 7, "description": "1 DÍA", "price": 25, "selected": True, }, { "id": 8, "description": "TALLERES", "price": 40, "selected": True, }, { "id": 9, "description": "OTRO MONTO", "price": 0, "selected": True, }, ]
+            NewTarifa.objects.all().delete()
+            new_tarifas = [NewTarifa(id=t["id"], description=t["description"], price=t["price"], selected=t["selected"]) for t in tarifas]
+            NewTarifa.objects.bulk_create(new_tarifas)
+            self.stdout.write(f"✅ Tarifas creadas: {len(new_tarifas)}")
+
             
             # Iglesias
             iglesias = Iglesias.objects.using('externa').all()
@@ -89,7 +98,7 @@ class Command(BaseCommand):
                         voucherfile=ins.voucherpath,
                         voucheramount=ins.voucheramount,
                         paymentmethod=payment,
-                        activity=newactity,  # Asegúrate de que exista y se pueda mapear
+                        activity=newactivity,  # Asegúrate de que exista y se pueda mapear
                         # tarifa=ins.tarifa  # Asegúrate de que exista y se pueda mapear
                     )
                     NewInscription.objects.create(

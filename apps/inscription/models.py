@@ -14,8 +14,9 @@ class PaymentMethod(models.Model):
 
 class Tarifa(TimeStampedModel):
     description = models.CharField(unique=True, max_length=50)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    active = models.BooleanField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    active = models.BooleanField(default=True)
+    selected = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'Tarifa'
