@@ -42,3 +42,4 @@ data.json
 
 apps/credit/templates/editable_contract.html
 media/business/
+media/vouchers/
