@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: download changes and build
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            cd /home/tsi/inscriptions/django_inscriptions
+            cd /home/tsi/inscriptions/jni/django_inscriptions
             source ../bin/activate
             git pull
             python manage.py makemigrations
