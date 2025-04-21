@@ -23,7 +23,7 @@ class Command(BaseCommand):
             self.stdout.write(f"✅ Actividad creada: {newactivity.title}")
 
             # Tarifas
-            tarifas = [ { "id": 1, "description": "GENERAL", "price": 120, "selected": True, }, { "id": 2, "description": "ALIMENTACION Y TALLERES", "price": 90, "selected": True, }, { "id": 3, "description": "HOSPEDAJE Y TALLERES", "price": 60, "selected": True, }, { "id": 4, "description": "4 DÍAS", "price": 110, "selected": True, }, { "id": 5, "description": "3 DÍAS", "price": 80, "selected": True, }, { "id": 6, "description": "2 DÍAS", "price": 50, "selected": True, }, { "id": 7, "description": "1 DÍA", "price": 25, "selected": True, }, { "id": 8, "description": "TALLERES", "price": 40, "selected": True, }, { "id": 9, "description": "OTRO MONTO", "price": 0, "selected": True, }, ]
+            tarifas = [ { "id": 1, "description": "GENERAL", "price": 120, "selected": True, }, { "id": 2, "description": "ALIMENTACION Y TALLERES", "price": 90, "selected": False, }, { "id": 3, "description": "HOSPEDAJE Y TALLERES", "price": 60, "selected": False, }, { "id": 4, "description": "4 DÍAS", "price": 110, "selected": False, }, { "id": 5, "description": "3 DÍAS", "price": 80, "selected": False, }, { "id": 6, "description": "2 DÍAS", "price": 50, "selected": False, }, { "id": 7, "description": "1 DÍA", "price": 25, "selected": False, }, { "id": 8, "description": "TALLERES", "price": 40, "selected": False, }, { "id": 9, "description": "OTRO MONTO", "price": 0, "selected": False, }, ]
             NewTarifa.objects.all().delete()
             new_tarifas = [NewTarifa(id=t["id"], description=t["description"], price=t["price"], selected=t["selected"]) for t in tarifas]
             NewTarifa.objects.bulk_create(new_tarifas)
@@ -48,7 +48,7 @@ class Command(BaseCommand):
             metodos_pago = MetodoPago.objects.using('externa').all()
             NewPaymentMethod.objects.all().delete()
             new_pagos = [
-                NewPaymentMethod(description=m.description, account=m.account, icon=m.icon, active=m.active)
+                NewPaymentMethod(description=m.description, account=m.account, active=m.active)
                 for m in metodos_pago
             ]
             NewPaymentMethod.objects.bulk_create(new_pagos)
