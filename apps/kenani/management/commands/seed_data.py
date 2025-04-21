@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
             # Tarifas
             tarifas = [ { "id": 1, "description": "GENERAL", "price": 120, "selected": True, }, { "id": 2, "description": "ALIMENTACION Y TALLERES", "price": 90, "selected": False, }, { "id": 3, "description": "HOSPEDAJE Y TALLERES", "price": 60, "selected": False, }, { "id": 4, "description": "4 DÍAS", "price": 110, "selected": False, }, { "id": 5, "description": "3 DÍAS", "price": 80, "selected": False, }, { "id": 6, "description": "2 DÍAS", "price": 50, "selected": False, }, { "id": 7, "description": "1 DÍA", "price": 25, "selected": False, }, { "id": 8, "description": "TALLERES", "price": 40, "selected": False, }, { "id": 9, "description": "OTRO MONTO", "price": 0, "selected": False, }, ]
-            NewTarifa.objects.all().delete()
+            # NewTarifa.objects.all().delete()
             new_tarifas = [NewTarifa(id=t["id"], description=t["description"], price=t["price"], selected=t["selected"]) for t in tarifas]
             NewTarifa.objects.bulk_create(new_tarifas)
             self.stdout.write(f"✅ Tarifas creadas: {len(new_tarifas)}")
@@ -32,21 +32,21 @@ class Command(BaseCommand):
             
             # Iglesias
             iglesias = Iglesias.objects.using('externa').all()
-            NewChurch.objects.all().delete()
+            # NewChurch.objects.all().delete()
             new_iglesias = [NewChurch(description=i.description, active=i.active) for i in iglesias]
             NewChurch.objects.bulk_create(new_iglesias)
             self.stdout.write(f"✅ Iglesias importadas: {len(new_iglesias)}")
 
             # Tipos de documento
             tipos_doc = TipoDoc.objects.using('externa').all()
-            NewDocumentType.objects.all().delete()
+            # NewDocumentType.objects.all().delete()
             new_docs = [NewDocumentType(description=d.description, active=d.active) for d in tipos_doc]
             NewDocumentType.objects.bulk_create(new_docs)
             self.stdout.write(f"✅ Documentos importados: {len(new_docs)}")
 
             # Métodos de pago
             metodos_pago = MetodoPago.objects.using('externa').all()
-            NewPaymentMethod.objects.all().delete()
+            # NewPaymentMethod.objects.all().delete()
             new_pagos = [
                 NewPaymentMethod(description=m.description, account=m.account, active=m.active)
                 for m in metodos_pago
@@ -56,7 +56,7 @@ class Command(BaseCommand):
 
             # Personas
             personas = Persona.objects.using('externa').all()
-            NewPerson.objects.all().delete()
+            # NewPerson.objects.all().delete()
             count_personas = 0
             for persona in personas:
                 try:
@@ -86,8 +86,8 @@ class Command(BaseCommand):
 
             # Inscripciones
             inscripciones = Inscripcion.objects.using('externa').all()
-            NewInscription.objects.all().delete()
-            InscriptionGroup.objects.all().delete()
+            # NewInscription.objects.all().delete()
+            # InscriptionGroup.objects.all().delete()
             count_inscripciones = 0
             for ins in inscripciones:
                 try:
