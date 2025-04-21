@@ -5,11 +5,6 @@ from apps.person.models import Person
 from .models import *
 
 
-class InscriptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Inscription
-        fields = '__all__'
-
 class PaymentMethodSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentMethod
@@ -46,3 +41,20 @@ class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
             )
 
         return group
+
+class InscriptionGroupSerializer(serializers.ModelSerializer):
+    tarifa = TarifaSerializer(read_only=True)
+    paymentmethod = PaymentMethodSerializer(read_only=True)
+    
+    class Meta:
+        model = InscriptionGroup
+        fields = '__all__'
+
+
+class InscriptionSerializer(serializers.ModelSerializer):
+    group = InscriptionGroupSerializer(read_only=True)
+    person = PersonSerializer(read_only=True)
+
+    class Meta:
+        model = Inscription
+        fields = '__all__'
