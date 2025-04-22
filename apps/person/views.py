@@ -90,7 +90,7 @@ class PersonView(viewsets.GenericViewSet):
                     "email":person.email,
                     "status":person.status,
                     "kind":person.kind,
-                    "documenttype":person.documenttype,
+                    "documenttype":person.documenttype.id,
                     "church":person.church,
                     "user":person.user,
                 }
