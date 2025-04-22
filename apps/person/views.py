@@ -90,8 +90,8 @@ class PersonView(viewsets.GenericViewSet):
                     "email":person.email,
                     "status":person.status,
                     "kind":person.kind,
-                    "documenttype":person.documenttype.id,
-                    "church":person.church.id,
+                    "documenttype":person.documenttype.id if person.documenttype else None,
+                    "church":person.church.id if person.church else None,
                     "user":person.user.id if person.user else None,
                 }
             })
