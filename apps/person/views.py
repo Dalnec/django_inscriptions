@@ -75,7 +75,6 @@ class PersonView(viewsets.GenericViewSet):
         person = Person.objects.filter(doc_num=document)
         if person.exists():
             person = person.first()
-            collector = person.collector
             return Response({
                 "success": True, 
                 "message":f"{document} ya existe", 
