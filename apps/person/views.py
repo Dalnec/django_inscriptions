@@ -92,7 +92,7 @@ class PersonView(viewsets.GenericViewSet):
                     "kind":person.kind,
                     "documenttype":person.documenttype.id,
                     "church":person.church.id,
-                    "user":person.user.id,
+                    "user":person.user.id if person.user else None,
                 }
             })
             
