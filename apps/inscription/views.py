@@ -108,7 +108,7 @@ class TarifaView(viewsets.GenericViewSet):
 @extend_schema(tags=["Inscription"])
 class InscriptionView(viewsets.GenericViewSet):
     serializer_class = InscriptionSerializer
-    queryset = Inscription.objects.all().order_by("id")
+    queryset = Inscription.objects.all().order_by("-id")
     filter_backends = [DjangoFilterBackend]
     filterset_class = InscriptionFilter
     pagination_class = InscriptionPagination
