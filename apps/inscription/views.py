@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
+from apps.inscription.functions import send_voucher_email
 
 from .models import *
 from .serializers import *
@@ -152,10 +153,11 @@ class InscriptionView(viewsets.GenericViewSet):
             {"message": "No tiene permisos para realizar esta accion"},
             status=status.HTTP_403_FORBIDDEN,
         )
+    
 
 @extend_schema(tags=["InscriptionGroup"])
 class InscriptionGroupView(viewsets.ModelViewSet):
-    queryset = InscriptionGroup.objects.all()
+    queryset = InscriptionGroup.objects.all().order_by("-id")
     serializer_class = InscriptionGroupCreateSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = InscriptionGroupFilter
@@ -168,5 +170,24 @@ class InscriptionGroupView(viewsets.ModelViewSet):
         if serializer.is_valid():
             group = serializer.save()
             group.generate_code()
+            if group.activity.send_email:
+                if group.activity.emails:
+                    send_voucher_email(group, group.activity.emails)
             return Response({"message": "Grupo registrado con éxito", "group_id": group.id}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def send_email(self, request, pk):
+        instance = self.get_object()
+        # serializer = self.get_serializer(data=request.data)
+        # if serializer.is_valid():
+        #     data = serializer.validated_data
+        #     inscription = Inscription.objects.get(id=data['inscription_id'])
+        #     inscription.send_email()
+        #     return Response({"message": "Email enviado con éxito"}, status=status.HTTP_200_OK)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if instance.activity.send_email:
+            if not instance.activity.emails:
+                return Response({"message": "No hay correos configurados para enviar el voucher"}, status=status.HTTP_400_BAD_REQUEST)
+            send_voucher_email(instance, instance.activity.emails)
+        return Response({"message": "Email enviado con éxito"}, status=status.HTTP_200_OK)

@@ -23,7 +23,7 @@ class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = InscriptionGroup
-        fields = ['activity', 'voucheramount', 'voucherfile', 'vouchergroup', 
+        fields = ['id','activity', 'voucheramount', 'voucherfile', 'vouchergroup', 
                 'paymentmethod', 'tarifa', 'user', 'people']
 
     def create(self, validated_data):

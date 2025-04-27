@@ -50,3 +50,9 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = BASE_DIR / "media/"
 MEDIA_URL = "/media/"
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'  # 'mail.tsi.pe'
+EMAIL_HOST_USER = env('SMTP_EMAIL')
+EMAIL_HOST_PASSWORD = env('SMTP_PASS')
+EMAIL_PORT = 587

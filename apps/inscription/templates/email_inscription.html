@@ -1,0 +1,22 @@
+<p>¡Gracias por su inscripción!</p>
+
+<h3>Detalles del Grupo de Inscripción:</h3>
+<ul>
+  <li><strong>Código de Grupo:</strong> {{ group.code }}</li>
+  <li><strong>Fecha y Hora:</strong> {{ group.date|date:"d/m/Y H:i" }}</li>
+</ul>
+
+<h4>Personas Inscritas ({{inscriptions.count}}):</h4>
+<ul>
+  {% for i in inscriptions %}
+  <li>{{ i.person.doc_num }} - {{ i.person.fullname }}</li>
+  {% endfor %}
+</ul>
+
+<p><strong>Método de Pago:</strong> {{ payment_method }}</p>
+<p><strong>Monto Total:</strong> {{ total_amount }} Bs.</p>
+
+<p>
+  Atentamente,<br />
+  Equipo de Inscripciones
+</p>

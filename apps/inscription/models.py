@@ -11,6 +11,9 @@ class PaymentMethod(models.Model):
         db_table = 'PaymentMethod'
         verbose_name = "Metedo de Pago"
         verbose_name_plural = "Metodos de Pagos"
+    
+    def __str__(self):
+        return self.description
 
 class Tarifa(TimeStampedModel):
     description = models.CharField(unique=True, max_length=50)
@@ -23,10 +26,15 @@ class Tarifa(TimeStampedModel):
         verbose_name = "Tarifa"
         verbose_name_plural = "Tarifas"
 
+def path_and_rename(instance, filename):
+    upload_to = 'vouchers/'
+    ext = filename.split('.')[-1]
+    filename = '{}_{}_{}.{}'.format(f'voucher{instance.activity.id}', instance.vouchergroup, instance.voucheramount, ext)
+    return upload_to + filename
 
 class InscriptionGroup(TimeStampedModel):
     vouchergroup = models.CharField(max_length=100, blank=True, null=True)
-    voucherfile = models.ImageField(upload_to='vouchers/', blank=True, null=True)
+    voucherfile = models.ImageField(upload_to=path_and_rename, blank=True, null=True)
     voucheramount = models.DecimalField(max_digits=10, decimal_places=2)
     activity = models.ForeignKey('activity.Activity', models.CASCADE, related_name="fk_InscriptionGroupActivity")
     user = models.ForeignKey('user.User', models.CASCADE, blank=True, null=True, related_name="fk_InscriptionGroupUser")
@@ -65,3 +73,17 @@ class Inscription(TimeStampedModel):
         db_table = 'Inscription'
         verbose_name = "Inscripcion"
         verbose_name_plural = "Inscripciones"
+    
+    def send_email(self, subject='Inscripción', body=None, from_email='dalnec1405@gmail.com', to_email=['daleonco_1995@hotmail.com']):
+        from django.core.mail import EmailMessage
+
+        email = EmailMessage(
+            "subject",
+            "body",
+            from_email,
+            to_email,
+            # attachments=[
+            #     (self.filename, output.getvalue(), 'application/vnd.ms-excel')
+            # ]
+        )
+        email.send()
