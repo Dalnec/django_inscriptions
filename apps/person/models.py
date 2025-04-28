@@ -46,7 +46,7 @@ class Person(TimeStampedModel):
     phone = models.CharField(max_length=11, blank=True, null=True)
     email = models.CharField(max_length=100, blank=True, null=True)
     status = models.BooleanField()
-    kind = models.CharField(max_length=80, blank=True, null=True)
+    # kind = models.CharField(max_length=80, blank=True, null=True)
     documenttype = models.ForeignKey(DocumentType, models.DO_NOTHING, blank=True, null=True, related_name='fk_PersonDocument')
     church = models.ForeignKey(Church, models.SET_NULL, blank=True, null=True, related_name='fk_PersonChurch')
     user = models.ForeignKey('user.User', models.CASCADE, blank=True, null=True, related_name='fk_PersonUser')

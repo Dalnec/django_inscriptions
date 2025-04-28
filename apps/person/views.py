@@ -202,3 +202,51 @@ class DocumentTypeView(viewsets.GenericViewSet):
             {"message": "No tiene permisos para realizar esta accion"},
             status=status.HTTP_403_FORBIDDEN,
         )
+
+@extend_schema(tags=["Kind"])
+class KindView(viewsets.GenericViewSet):
+    serializer_class = KindSerializer
+    queryset = Kind.objects.all().order_by("id")
+    filter_backends = [DjangoFilterBackend]
+    # filterset_class = KindFilter
+    # pagination_class = KindPagination
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+    def destroy(self, request, pk=None):
+        instance = self.get_object()
+        if request.user.is_owner:
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
+        return Response(
+            {"message": "No tiene permisos para realizar esta accion"},
+            status=status.HTTP_403_FORBIDDEN,
+        )

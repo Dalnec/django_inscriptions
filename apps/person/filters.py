@@ -6,7 +6,7 @@ class PersonFilter(django_filters.FilterSet):
     class Meta:
         model = Person
         fields = [ 'code', 'doc_num', 'names', 'lastnames', 'gender', 'birthdate', 'phone', 
-                  'email', 'status', 'kind', 'documenttype', 'church', 'user', ]
+                  'email', 'status', 'documenttype', 'church', 'user', ]
 
 class PersonPagination(PageNumberPagination):
     page_size_query_param = "page_size"

@@ -19,3 +19,8 @@ class DocumentTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentType
         fields = '__all__'
+
+class KindSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentType
+        fields = '__all__'
