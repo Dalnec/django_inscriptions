@@ -32,7 +32,7 @@ class Person(TimeStampedModel):
     names = models.CharField(max_length=100)
     lastnames = models.CharField(max_length=100)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True )
-    birthday = models.DateField(blank=True, null=True)
+    birthdate = models.DateField(blank=True, null=True)
     phone = models.CharField(max_length=11, blank=True, null=True)
     email = models.CharField(max_length=100, blank=True, null=True)
     status = models.BooleanField()
@@ -54,8 +54,7 @@ class Person(TimeStampedModel):
     def generate_code(self):
         latest = Person.objects.order_by('-id').first()
         next_number = latest.id if latest else 1
-        self.code = f"P{next_number:04d}"
-        self.save()
+        return f"P{next_number:04d}"
     
     # @property
     # def countReturns(self):

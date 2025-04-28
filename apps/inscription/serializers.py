@@ -54,6 +54,8 @@ class InscriptionGroupSerializer(serializers.ModelSerializer):
 class InscriptionSerializer(serializers.ModelSerializer):
     group = InscriptionGroupSerializer(read_only=True)
     person = PersonSerializer(read_only=True)
+    status_description = serializers.ReadOnlyField()
+
 
     class Meta:
         model = Inscription

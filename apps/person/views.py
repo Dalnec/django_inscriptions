@@ -35,7 +35,8 @@ class PersonView(viewsets.GenericViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        person = serializer.save()
+        person.code = person.generate_code()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
@@ -77,15 +78,15 @@ class PersonView(viewsets.GenericViewSet):
             person = person.first()
             return Response({
                 "success": True, 
-                "message":f"{document} ya existe", 
+                "message":f"{document} ya se encuentra registrado", 
                 "data": {
                     "created":person.created.strftime("%Y-%m-%d %H:%M:%S"),
-                    "code":person.code,
+                    "code":person.code or person.generate_code(),
                     "doc_num":person.doc_num,
                     "names":person.names,
                     "lastnames":person.lastnames,
                     "gender":person.gender,
-                    "birthday":person.birthday,
+                    "birthdate":person.birthdate,
                     "phone":person.phone,
                     "email":person.email,
                     "status":person.status,

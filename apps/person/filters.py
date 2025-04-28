@@ -5,7 +5,7 @@ from .models import *
 class PersonFilter(django_filters.FilterSet):
     class Meta:
         model = Person
-        fields = [ 'code', 'doc_num', 'names', 'lastnames', 'gender', 'birthday', 'phone', 
+        fields = [ 'code', 'doc_num', 'names', 'lastnames', 'gender', 'birthdate', 'phone', 
                   'email', 'status', 'kind', 'documenttype', 'church', 'user', ]
 
 class PersonPagination(PageNumberPagination):

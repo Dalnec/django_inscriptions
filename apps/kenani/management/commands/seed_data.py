@@ -70,7 +70,7 @@ class Command(BaseCommand):
                         names=persona.names,
                         lastnames=persona.lastnames,
                         gender=persona.gender,
-                        birthday=persona.birthday,
+                        birthdate=persona.birthday,
                         phone=persona.phone,
                         email=persona.email,
                         status=persona.status,

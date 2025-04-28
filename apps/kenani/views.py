@@ -44,7 +44,7 @@ from .models import Church as Iglesias, Documenttype as TipoDoc, Inscription as 
 #             )
         
 #         for person in people:
-#             print(person.doc_num, person.names, person.lastnames, person.birthday, person.phone, person.email, person.status, person.type_person, person.documenttype, person.church)
+#             print(person.doc_num, person.names, person.lastnames, person.birthdate, person.phone, person.email, person.status, person.type_person, person.documenttype, person.church)
 #             dt = NewDocumentType.objects.get(id=person.documenttype.id)
 #             church = NewChurch.objects.get(id=person.church.id)
 #             p = NewPerson.objects.create(
@@ -55,7 +55,7 @@ from .models import Church as Iglesias, Documenttype as TipoDoc, Inscription as 
 #                 names=person.names,
 #                 lastnames=person.lastnames,
 #                 gender=person.gender,
-#                 birthday=person.birthday,
+#                 birthdate=person.birthdate,
 #                 phone=person.phone,
 #                 email=person.email,
 #                 status=person.status,
