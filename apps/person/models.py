@@ -21,6 +21,16 @@ class DocumentType(models.Model):
         verbose_name_plural = "Tipo Documentos"
 
 
+class Kind(models.Model):
+    description = models.CharField(unique=True, max_length=200)
+    active = models.BooleanField()
+
+    class Meta:
+        db_table = 'Kind'
+        verbose_name = "Kind"
+        verbose_name_plural = "Kinds"
+
+
 class Person(TimeStampedModel):
     GENDER_CHOICES = [
         ("F", "FEMENINO"),
@@ -40,6 +50,7 @@ class Person(TimeStampedModel):
     documenttype = models.ForeignKey(DocumentType, models.DO_NOTHING, blank=True, null=True, related_name='fk_PersonDocument')
     church = models.ForeignKey(Church, models.SET_NULL, blank=True, null=True, related_name='fk_PersonChurch')
     user = models.ForeignKey('user.User', models.CASCADE, blank=True, null=True, related_name='fk_PersonUser')
+    kind_fk = models.ForeignKey('Kind', models.SET_NULL, blank=True, null=True, related_name='fk_PersonKind')
     # returned = models.ArrayField()
 
     class Meta:
