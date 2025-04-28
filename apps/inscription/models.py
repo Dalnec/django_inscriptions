@@ -29,7 +29,7 @@ class Tarifa(TimeStampedModel):
 def path_and_rename(instance, filename):
     upload_to = 'vouchers/'
     ext = filename.split('.')[-1]
-    filename = '{}_{}_{}.{}'.format(f'voucher{instance.activity.id}', instance.vouchergroup, instance.voucheramount, ext)
+    filename = '{}_{}_{}.{}'.format(f'voucher_{instance.activity.id}', instance.vouchergroup, instance.tarifa.description, ext)
     return upload_to + filename
 
 class InscriptionGroup(TimeStampedModel):
@@ -49,8 +49,9 @@ class InscriptionGroup(TimeStampedModel):
     def generate_code(self):
         latest = InscriptionGroup.objects.order_by('-id').first()
         next_number = latest.id if latest else 1
-        self.vouchergroup = f"G{next_number:04d}"
-        self.save()
+        return f"G{next_number:04d}"
+        # self.vouchergroup = f"G{next_number:04d}"
+        # self.save()
 
 
 class Inscription(TimeStampedModel):
@@ -73,6 +74,10 @@ class Inscription(TimeStampedModel):
         db_table = 'Inscription'
         verbose_name = "Inscripcion"
         verbose_name_plural = "Inscripciones"
+    
+    @property
+    def status_description(self):
+        return dict(self.STATUS_INSCRIPTION).get(self.status, 'Unknown')
     
     def send_email(self, subject='Inscripción', body=None, from_email='dalnec1405@gmail.com', to_email=['daleonco_1995@hotmail.com']):
         from django.core.mail import EmailMessage

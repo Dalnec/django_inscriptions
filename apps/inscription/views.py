@@ -168,8 +168,11 @@ class InscriptionGroupView(viewsets.ModelViewSet):
         print(request.data)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            group = serializer.save()
-            group.generate_code()
+            group = serializer.save(commit=False)
+            latest = InscriptionGroup.objects.order_by('-id').first()
+            next_number = latest.id + 1 if latest else 1
+            group.vouchergroup = f"G{next_number:04d}"
+            group.save()
             if group.activity.send_email:
                 if group.activity.emails:
                     send_voucher_email(group, group.activity.emails)

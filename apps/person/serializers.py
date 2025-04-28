@@ -3,6 +3,9 @@ from .models import *
 
 
 class PersonSerializer(serializers.ModelSerializer):
+    church_description = serializers.ReadOnlyField(source='church.description')
+    documenttype_description = serializers.ReadOnlyField(source='documenttype.description')
+
     class Meta:
         model = Person
         fields = '__all__'
