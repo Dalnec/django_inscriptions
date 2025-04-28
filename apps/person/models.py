@@ -50,7 +50,7 @@ class Person(TimeStampedModel):
     documenttype = models.ForeignKey(DocumentType, models.DO_NOTHING, blank=True, null=True, related_name='fk_PersonDocument')
     church = models.ForeignKey(Church, models.SET_NULL, blank=True, null=True, related_name='fk_PersonChurch')
     user = models.ForeignKey('user.User', models.CASCADE, blank=True, null=True, related_name='fk_PersonUser')
-    kind_fk = models.ForeignKey('Kind', models.SET_NULL, blank=True, null=True, related_name='fk_PersonKind')
+    kind = models.ForeignKey('Kind', models.SET_NULL, blank=True, null=True, related_name='fk_PersonKind')
     # returned = models.ArrayField()
 
     class Meta:
