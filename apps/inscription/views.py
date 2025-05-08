@@ -194,6 +194,6 @@ class InscriptionGroupView(viewsets.ModelViewSet):
         return Response({"message": "Email enviado con éxito"}, status=status.HTTP_200_OK)
 
     def generate_code(self):
-        latest = InscriptionGroup.objects.order_by('-id').first()
+        latest = InscriptionGroup.objects.all().order_by('-id').first()
         next_number = latest.id if latest else 1
         return f"G{next_number:04d}"

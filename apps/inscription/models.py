@@ -47,7 +47,7 @@ class InscriptionGroup(TimeStampedModel):
         verbose_name_plural = "Grupos de Inscripcion"
     
     def generate_code(self):
-        latest = InscriptionGroup.objects.order_by('-id').first()
+        latest = InscriptionGroup.objects.all().order_by('-id').first()
         next_number = latest.id if latest else 1
         return f"G{next_number:04d}"
         # self.vouchergroup = f"G{next_number:04d}"
