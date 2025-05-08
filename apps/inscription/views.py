@@ -168,11 +168,9 @@ class InscriptionGroupView(viewsets.ModelViewSet):
         print(request.data)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            group = serializer.save(commit=False)
-            latest = InscriptionGroup.objects.order_by('-id').first()
-            next_number = latest.id + 1 if latest else 1
-            group.vouchergroup = f"G{next_number:04d}"
-            group.save()
+            group = serializer.save(
+                vouchergroup=self.generate_code()
+            )
             if group.activity.send_email:
                 if group.activity.emails:
                     send_voucher_email(group, group.activity.emails)
@@ -194,3 +192,8 @@ class InscriptionGroupView(viewsets.ModelViewSet):
                 return Response({"message": "No hay correos configurados para enviar el voucher"}, status=status.HTTP_400_BAD_REQUEST)
             send_voucher_email(instance, instance.activity.emails)
         return Response({"message": "Email enviado con éxito"}, status=status.HTTP_200_OK)
+
+    def generate_code(self):
+        latest = InscriptionGroup.objects.order_by('-id').first()
+        next_number = latest.id if latest else 1
+        return f"G{next_number:04d}"

@@ -7,3 +7,4 @@ from .models import *
 admin.site.register(Church)
 admin.site.register(DocumentType)
 admin.site.register(Person)
+admin.site.register(Kind)
