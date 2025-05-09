@@ -56,10 +56,10 @@ class UserView(viewsets.ModelViewSet):
         user = User.objects.create(**serializer.validated_data)
         user.set_password(request.data['password'])
         
-        permission = request.data['user_permission']
-        for a in permission:
-            DetailPermission.objects.create(user=user,
-                permission = Permission.objects.get(pk=a))
+        # permission = request.data['user_permission']
+        # for a in permission:
+        #     DetailPermission.objects.create(user=user,
+        #         permission = Permission.objects.get(pk=a))
         user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -68,12 +68,11 @@ class UserView(viewsets.ModelViewSet):
         serializer = UserSerializer(user, data = request.data)
         
         if serializer.is_valid():
-            DetailPermission.objects.filter(user=user).delete()
-            permission = request.data['user_permission']
-
-            for a in permission:
-                DetailPermission.objects.create(user=user,
-                permission = Permission.objects.get(pk=a))
+            # DetailPermission.objects.filter(user=user).delete()
+            # permission = request.data['user_permission']
+            # for a in permission:
+            #     DetailPermission.objects.create(user=user,
+            #     permission = Permission.objects.get(pk=a))
             
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
