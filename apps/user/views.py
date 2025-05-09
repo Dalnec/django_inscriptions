@@ -16,7 +16,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import generics, viewsets, status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializer import (PermissionSerializer, ProfileSerializer, UserLogin,
-                        UserSerializer, TokenSerializer)
+                        UserSerializer, TokenSerializer, PasswordSerializer)
 
 from .models import DetailPermission, Permission, Profile, User
 from django.contrib.auth.hashers import check_password
@@ -84,17 +84,19 @@ class UserView(viewsets.ModelViewSet):
         user.save()
         return Response({"Estado": user.is_active}, status=status.HTTP_200_OK)
 
-
-class ChangePassword(viewsets.ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
-    queryset = User.objects.all().exclude(is_superuser=True)
-    serializer_class = UserSerializer
-    
-    def update(self, request,  pk=None):
-        user = User.objects.get(id=pk)
-        user.set_password(request.data['password'])
-        user.save()
-        return Response({"Password": "Se actuazlizo la clave."}, status=status.HTTP_201_CREATED)
+    @action(detail=True, methods=['put'], serializer_class=PasswordSerializer)
+    def change_password(self, request, pk=None):
+        user = self.get_object()
+        serializer = PasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            password = serializer.validated_data['password']
+            password2 = serializer.validated_data['password2']
+            if password == password2:
+                user.set_password(password)
+                user.save()
+                return Response({"Estado": "Se cambio la contraseña correctamente."}, status=status.HTTP_200_OK)
+            return Response({"error": "Las contraseñas no coinciden."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PermissionView(viewsets.ModelViewSet):
@@ -130,6 +132,7 @@ class Login(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username', '')
         password = request.data.get('password', '')
+        print(username, password)
         user = authenticate(username=username, password=password)
 
         if user:

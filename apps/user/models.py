@@ -37,16 +37,16 @@ class Permission(models.Model):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    GENDER_CHOICES = (
-        ('M', 'Masculino'),
-        ('F', 'Femenino'),
-    )
+    # GENDER_CHOICES = (
+    #     ('M', 'Masculino'),
+    #     ('F', 'Femenino'),
+    # )
 
     username = models.CharField(max_length=11, unique=True)
     names = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(unique=True, blank=True, null=True)
     lastname = models.CharField(max_length=30, null=True, blank=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, default='M')
+    # gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, default='M')
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     

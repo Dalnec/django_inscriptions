@@ -9,11 +9,15 @@ class PermissionSerializer(serializers.ModelSerializer):
         model = Permission
         fields = '__all__'
 
+class PasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
+
 class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'names', 'email', 'lastname', 'gender', 
+        fields = ('id', 'names', 'email', 'lastname', 
                 'username', 'password', 'is_active', 'profile')
 
 
