@@ -14,11 +14,13 @@ class PasswordSerializer(serializers.Serializer):
     password2 = serializers.CharField(write_only=True)
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_description = serializers.ReadOnlyField(source='profile.description')
     
     class Meta:
         model = User
         fields = ('id', 'names', 'email', 'lastname', 
-                'username', 'password', 'is_active', 'profile')
+                'username', 'password', 'is_active', 'profile', 'profile_description')
+        extra_kwargs = {'password': {'read_only': True}}
 
 
 class ProfileSerializer(serializers.ModelSerializer):
