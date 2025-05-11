@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from apps.person.models import Church as NewChurch, DocumentType as NewDocumentType, Person as NewPerson
+from apps.person.models import Church as NewChurch, DocumentType as NewDocumentType, Person as NewPerson, Kind
 from apps.inscription.models import PaymentMethod as NewPaymentMethod, Tarifa as NewTarifa, InscriptionGroup, Inscription as NewInscription
 from apps.activity.models import Activity as NewActivity
 from apps.kenani.models import Church as Iglesias, Documenttype as TipoDoc, Inscription as Inscripcion, Paymentmethod as MetodoPago, Person as Persona
@@ -7,6 +7,18 @@ from apps.kenani.models import Church as Iglesias, Documenttype as TipoDoc, Insc
 class Command(BaseCommand):
     help = "Extrae datos desde la base externa y los inserta en el sistema local"
 
+    def get_kind(self, kind):
+        if kind == "P":
+            return Kind.objects.get(description="PASTOR")
+        elif kind == "L":
+            return Kind.objects.get(description="LIDER")
+        elif kind == "M":
+            return Kind.objects.get(description="MIEMBRO ACTIVO")
+        elif kind == "I":
+            return Kind.objects.get(description="INVITADO")
+        else:
+            return None 
+    
     def handle(self, *args, **kwargs):
         try:
             self.stdout.write("🔄 Iniciando proceso de seed...")
@@ -30,6 +42,15 @@ class Command(BaseCommand):
             )
             self.stdout.write(f"✅ Actividad creada: {newactivity.title}")
             self.stdout.write(f"✅ Actividad creada: {newactivity2.title}")
+            # Kind
+            kind_data = [
+                Kind(description="PASTOR", active=True), 
+                Kind(description="LIDER", active=True),
+                Kind(description="MIEMBRO ACTIVO", active=True),
+                Kind(description="INVITADO", active=True)
+            ]
+            Kind.objects.bulk_create(kind_data)
+            self.stdout.write(f"✅ Kinds creados: {len(kind_data)}")
 
             # Tarifas
             tarifas = [ { "id": 1, "description": "GENERAL", "price": 120, "selected": True, }, { "id": 2, "description": "ALIMENTACION Y TALLERES", "price": 90, "selected": False, }, { "id": 3, "description": "HOSPEDAJE Y TALLERES", "price": 60, "selected": False, }, { "id": 4, "description": "4 DÍAS", "price": 110, "selected": False, }, { "id": 5, "description": "3 DÍAS", "price": 80, "selected": False, }, { "id": 6, "description": "2 DÍAS", "price": 50, "selected": False, }, { "id": 7, "description": "1 DÍA", "price": 25, "selected": False, }, { "id": 8, "description": "TALLERES", "price": 40, "selected": False, }, { "id": 9, "description": "OTRO MONTO", "price": 0, "selected": False, }, ]
@@ -83,7 +104,7 @@ class Command(BaseCommand):
                         phone=persona.phone,
                         email=persona.email,
                         status=persona.status,
-                        kind=persona.type_person,
+                        kind=self.get_kind(persona.type_person),
                         documenttype=doc_type,
                         church=church
                     )
