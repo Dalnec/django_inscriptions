@@ -18,9 +18,18 @@ class Command(BaseCommand):
                 location="Ubicación de prueba",
                 start_date="2023-01-01 00:00:00",
                 end_date="2023-01-02 00:00:00",
+                is_active=False,
+            )
+            newactivity2 = NewActivity.objects.create(
+                title="KASOSH",
+                description="Campamento de jóvenes",
+                location="Tarapoto - Lamas",
+                start_date="2023-01-01 00:00:00",
+                end_date="2023-01-02 00:00:00",
                 is_active=True,
             )
             self.stdout.write(f"✅ Actividad creada: {newactivity.title}")
+            self.stdout.write(f"✅ Actividad creada: {newactivity2.title}")
 
             # Tarifas
             tarifas = [ { "id": 1, "description": "GENERAL", "price": 120, "selected": True, }, { "id": 2, "description": "ALIMENTACION Y TALLERES", "price": 90, "selected": False, }, { "id": 3, "description": "HOSPEDAJE Y TALLERES", "price": 60, "selected": False, }, { "id": 4, "description": "4 DÍAS", "price": 110, "selected": False, }, { "id": 5, "description": "3 DÍAS", "price": 80, "selected": False, }, { "id": 6, "description": "2 DÍAS", "price": 50, "selected": False, }, { "id": 7, "description": "1 DÍA", "price": 25, "selected": False, }, { "id": 8, "description": "TALLERES", "price": 40, "selected": False, }, { "id": 9, "description": "OTRO MONTO", "price": 0, "selected": False, }, ]
