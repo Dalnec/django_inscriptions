@@ -3,10 +3,12 @@ from rest_framework.pagination import PageNumberPagination
 from .models import *
 
 class InscriptionFilter(django_filters.FilterSet):
+    activity = django_filters.CharFilter(field_name="group__activity__id", lookup_expr="exact")
+    
     class Meta:
         model = Inscription
         fields = [ 'checkinat', 'status', 'amount', 'observations', 
-                'person']
+                'person', 'activity']
 
 class InscriptionPagination(PageNumberPagination):
     page_size_query_param = "page_size"
