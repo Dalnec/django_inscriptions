@@ -4,6 +4,7 @@ from django.db import models
 class PaymentMethod(models.Model):
     description = models.CharField(unique=True, max_length=50)
     account = models.CharField(max_length=50, blank=True, null=True)
+    cci = models.CharField(max_length=50, blank=True, null=True)
     icon = models.ImageField(upload_to='icons/', blank=True, null=True)
     active = models.BooleanField()
 
