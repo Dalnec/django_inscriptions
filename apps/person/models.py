@@ -43,6 +43,7 @@ class Person(TimeStampedModel):
     lastnames = models.CharField(max_length=100)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True )
     birthdate = models.DateField(blank=True, null=True)
+    age = models.IntegerField(blank=True, null=True)
     phone = models.CharField(max_length=11, blank=True, null=True)
     email = models.CharField(max_length=100, blank=True, null=True)
     status = models.BooleanField()
