@@ -25,6 +25,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.tsi.pe',
     'http://localhost:5160',
     'http://192.168.0.111:5160',
+    'http://localhost:5030',
+    'http://192.168.0.111:5030',
 ]
 
 DATABASES = {
