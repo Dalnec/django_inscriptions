@@ -19,7 +19,7 @@ class TarifaSerializer(serializers.ModelSerializer):
 class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
     people = PersonSerializer(many=True, write_only=True)
     # voucherfile = serializers.ImageField(required=False)
-    voucherfile = Base64ImageField(required=True)
+    voucherfile = Base64ImageField(required=False)
     
     class Meta:
         model = InscriptionGroup
