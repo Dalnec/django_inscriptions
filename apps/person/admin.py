@@ -5,9 +5,9 @@ from .models import *
 
 class PersonAdmin(admin.ModelAdmin):
     search_fields = ["names", "lastnames", "doc_num"]
-    
+
 
 admin.site.register(Church)
 admin.site.register(DocumentType)
-admin.site.register(Person)
+admin.site.register(Person, PersonAdmin)
 admin.site.register(Kind)

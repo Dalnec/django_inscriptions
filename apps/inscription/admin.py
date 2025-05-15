@@ -17,7 +17,7 @@ class InscriptionAdmin(admin.ModelAdmin):
     search_fields = ["person__names", "person__lastnames"]
 
 
-admin.site.register(Inscription)
-admin.site.register(InscriptionGroup)
+admin.site.register(Inscription, InscriptionAdmin)
+admin.site.register(InscriptionGroup, InscriptionGroupAdmin)
 admin.site.register(Tarifa)
 admin.site.register(PaymentMethod, PaymentMethodAdmin)
