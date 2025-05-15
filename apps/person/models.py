@@ -59,6 +59,9 @@ class Person(TimeStampedModel):
         verbose_name = "Persona"
         verbose_name_plural = "Personas"
     
+    def __str__(self):
+        return f"{self.doc_num} {self.names} {self.lastnames}"
+    
     @property
     def fullname(self):
         return f"{self.names} {self.lastnames}"
