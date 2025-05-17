@@ -54,6 +54,11 @@ class Person(TimeStampedModel):
     kind = models.ForeignKey('Kind', models.SET_NULL, blank=True, null=True, related_name='fk_PersonKind')
     # returned = models.ArrayField()
 
+    def save(self, **kwargs):
+        self.names = self.names.upper()
+        self.lastnames = self.lastnames.upper()
+        super(Person, self).save()
+
     class Meta:
         db_table = 'Person'
         verbose_name = "Persona"
