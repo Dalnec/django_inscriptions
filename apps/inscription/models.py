@@ -51,7 +51,7 @@ class InscriptionGroup(TimeStampedModel):
         verbose_name_plural = "Grupos de Inscripcion"
     
     def __str__(self):
-        return f"{self.vouchergroup} - {self.activity.name}"
+        return f"{self.vouchergroup} - {self.activity.description}"
     
     def generate_code(self):
         latest = InscriptionGroup.objects.all().order_by('-id').first()
