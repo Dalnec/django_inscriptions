@@ -83,7 +83,7 @@ class Inscription(TimeStampedModel):
         verbose_name_plural = "Inscripciones"
     
     def __str__(self):
-        return f"{self.group.vouchergroup} - {self.person.name} {self.person.lastname} - {self.status_description}"
+        return f"{self.group.vouchergroup} - {self.person.names} {self.person.lastnames} - {self.status_description}"
     
     @property
     def status_description(self):
