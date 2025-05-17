@@ -26,6 +26,9 @@ class Tarifa(TimeStampedModel):
         db_table = 'Tarifa'
         verbose_name = "Tarifa"
         verbose_name_plural = "Tarifas"
+    
+    def __str__(self):
+        return f"{self.description} - {self.price}"
 
 def path_and_rename(instance, filename):
     upload_to = 'vouchers/'
