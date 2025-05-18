@@ -4,7 +4,6 @@ from django.template.loader import render_to_string
 
 def send_voucher_email(inscription_group, to_email):
     subject = 'Registro de Inscripción'
-    body = 'Adjuntamos el comprobante de inscripción.'
     from_email = 'dalnec1405@gmail.com'
     # to_email = ['daleonco_1995@hotmail.com']
 

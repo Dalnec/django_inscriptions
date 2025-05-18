@@ -64,8 +64,9 @@ class InscriptionGroup(TimeStampedModel):
 class Inscription(TimeStampedModel):
     STATUS_INSCRIPTION = [
         ("P", "PENDIENTE"),
-        ("R", "REGISTRADO"),
         ("C", "CONFIRMADO"),
+        ("A", "ASISTIO"),
+        ("R", "RECHAZADO"),
         ("E", "ERROR"),
     ]
 
