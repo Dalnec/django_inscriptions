@@ -13,10 +13,10 @@ jobs:
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            cd /home/tsi/inscriptions/jni/django_inscriptions
+            cd /home/tsi/inscriptions/demoinscriptions/django_inscriptions
             source ../bin/activate
             git pull
             python manage.py makemigrations
             python manage.py migrate
             python manage.py collectstatic --noinput
-            supervisorctl restart inscriptions
+            supervisorctl restart demoinscriptions
