@@ -90,7 +90,7 @@ class PersonView(viewsets.GenericViewSet):
                     "phone":person.phone,
                     "email":person.email,
                     "status":person.status,
-                    "kind":person.kind,
+                    "kind":person.kind.id if person.kind else None,
                     "documenttype":person.documenttype.id if person.documenttype else None,
                     "documenttype_description":person.documenttype.description if person.documenttype else None,
                     "church":person.church.id if person.church else None,

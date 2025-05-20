@@ -145,9 +145,9 @@ class InscriptionView(viewsets.GenericViewSet):
     
     def destroy(self, request, pk=None):
         instance = self.get_object()
-        if request.user.is_owner:
+        if request.user.perfil.descripcion.toUpper() == "Administrador".toUpper():
             instance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "Inscripcion eliminada con exito"}, status=status.HTTP_200_OK)
         
         return Response(
             {"message": "No tiene permisos para realizar esta accion"},
