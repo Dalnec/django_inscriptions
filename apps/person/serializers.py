@@ -18,13 +18,13 @@ class PersonSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError("El documento no puede estar vacío.")
         
-        # Validación para CREATE: Evita duplicados en creación
-        if self.instance is None and Person.objects.filter(doc_num=value).exists():
-            raise serializers.ValidationError("Ya existe una persona con este documento.")
+        # # Validación para CREATE: Evita duplicados en creación
+        # if self.instance is None and Person.objects.filter(doc_num=value).exists():
+        #     raise serializers.ValidationError("Ya existe una persona con este documento.")
         
-        # Validación para UPDATE: Evita duplicados al actualizar (excepto en sí misma)
-        if self.instance and Person.objects.filter(doc_num=value).exclude(id=self.instance.id).exists():
-            raise serializers.ValidationError("Ya existe otra persona con este documento.")
+        # # Validación para UPDATE: Evita duplicados al actualizar (excepto en sí misma)
+        # if self.instance and Person.objects.filter(doc_num=value).exclude(id=self.instance.id).exists():
+        #     raise serializers.ValidationError("Ya existe otra persona con este documento.")
         
         return value
 

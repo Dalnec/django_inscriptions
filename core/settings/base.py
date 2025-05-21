@@ -168,7 +168,7 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "DRF INSCRIPCIONES API",
-    "DESCRIPTION": "Creditos",
+    "DESCRIPTION": "Inscripciones para eventos",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
