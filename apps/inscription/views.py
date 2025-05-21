@@ -1,3 +1,4 @@
+import re
 from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -154,6 +155,21 @@ class InscriptionView(viewsets.GenericViewSet):
             status=status.HTTP_403_FORBIDDEN,
         )
     
+    @action(detail=True, methods=['post'])
+    def send_email(self, request, pk=None, *args, **kwargs):
+        instance = self.get_object()
+        email = request.data.get('email', None)
+        if not email:
+            return Response({"message": "El campo email es requerido"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validación con regex
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            return Response( {"error": "El formato del correo es inválido"}, status=status.HTTP_400_BAD_REQUEST )
+        
+        group = instance.group
+        send_inscription_email(group, [email])
+        return Response({"message": "Correo enviado con exito"}, status=status.HTTP_200_OK)
+    
 
 @extend_schema(tags=["InscriptionGroup"])
 class InscriptionGroupView(viewsets.ModelViewSet):
@@ -191,10 +207,6 @@ class InscriptionGroupView(viewsets.ModelViewSet):
                 return Response({"message": "No hay correos configurados para enviar el voucher"}, status=status.HTTP_400_BAD_REQUEST)
             send_voucher_email(instance, instance.activity.emails)
         return Response({"message": "Email enviado con éxito"}, status=status.HTTP_200_OK)
-
-    # @action(detail=True, methods=['put'])
-    # def change_voucherfile(self, request, pk=None):
-
 
     def generate_code(self):
         latest = InscriptionGroup.objects.all().order_by('-id').first()
