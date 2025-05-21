@@ -38,7 +38,7 @@ class Person(TimeStampedModel):
     ]
 
     code = models.CharField(max_length=20, blank=True, null=True)
-    doc_num = models.CharField(unique=True, max_length=15)
+    doc_num = models.CharField(max_length=15)
     names = models.CharField(max_length=100)
     lastnames = models.CharField(max_length=100)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True )

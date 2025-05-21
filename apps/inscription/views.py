@@ -176,8 +176,8 @@ class InscriptionGroupView(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
-    @action(detail=True, methods=['post'])
-    def send_email(self, request, pk):
+    @action(detail=True, methods=['get'])
+    def send_email(self, request, pk=None):
         instance = self.get_object()
         # serializer = self.get_serializer(data=request.data)
         # if serializer.is_valid():
@@ -191,6 +191,10 @@ class InscriptionGroupView(viewsets.ModelViewSet):
                 return Response({"message": "No hay correos configurados para enviar el voucher"}, status=status.HTTP_400_BAD_REQUEST)
             send_voucher_email(instance, instance.activity.emails)
         return Response({"message": "Email enviado con éxito"}, status=status.HTTP_200_OK)
+
+    # @action(detail=True, methods=['put'])
+    # def change_voucherfile(self, request, pk=None):
+
 
     def generate_code(self):
         latest = InscriptionGroup.objects.all().order_by('-id').first()
