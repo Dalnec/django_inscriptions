@@ -168,14 +168,11 @@ class InscriptionGroupView(viewsets.ModelViewSet):
         try:
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid():
-                group = serializer.save(
-                    vouchergroup=self.generate_code()
-                )
-                if group.activity.send_email:
-                    if group.activity.emails:
+                group = serializer.save( vouchergroup=self.generate_code() )
+                if group.activity.send_email and group.activity.emails:
                         send_voucher_email(group, group.activity.emails)
                 return Response({"message": "Grupo registrado con éxito", "group_id": group.id}, status=status.HTTP_201_CREATED)
-            # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
