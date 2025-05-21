@@ -9,7 +9,7 @@
 <h4>Personas Inscritas ({{inscriptions.count}}):</h4>
 <ul>
   {% for i in inscriptions %}
-  <li>{{ i.person.doc_num }} - {{ i.person.fullname }}</li>
+  <li>{{ i.person.doc_num }} - {{ i.person.fullname }} {{i.status_description}}</li>
   {% endfor %}
 </ul>
 

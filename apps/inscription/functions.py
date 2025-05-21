@@ -2,21 +2,21 @@ import mimetypes
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-def send_voucher_email(inscription_group, to_email):
+def send_voucher_email(group, to_email):
     subject = 'Registro de Inscripción'
     from_email = 'dalnec1405@gmail.com'
     # to_email = ['daleonco_1995@hotmail.com']
 
     context = {
         'group': {
-            'code': inscription_group.vouchergroup,
-            'activity': inscription_group.activity.title,
-            'date': inscription_group.created
+            'code': group.vouchergroup,
+            'activity': group.activity.title,
+            'date': group.created
         },
-        'inscriptions': inscription_group.fk_InscriptionGroup.all(),
-        'tarifa': inscription_group.tarifa.description,
-        'payment_method': inscription_group.paymentmethod.description,
-        'total_amount': inscription_group.voucheramount
+        'inscriptions': group.fk_InscriptionGroup.all(),
+        'tarifa': group.tarifa.description,
+        'payment_method': group.paymentmethod.description,
+        'total_amount': group.voucheramount
     }
 
 
@@ -27,11 +27,11 @@ def send_voucher_email(inscription_group, to_email):
     email = EmailMultiAlternatives(subject, text_content, from_email, to_email)
     email.attach_alternative(html_content, "text/html")
 
-    if inscription_group.voucherfile:
-        mime_type, _ = mimetypes.guess_type(inscription_group.voucherfile.name)
+    if group.voucherfile:
+        mime_type, _ = mimetypes.guess_type(group.voucherfile.name)
         email.attach(
-            inscription_group.voucherfile.name.split('/')[-1],
-            inscription_group.voucherfile.read(),
+            group.voucherfile.name.split('/')[-1],
+            group.voucherfile.read(),
             mime_type or 'application/octet-stream'
         )
     

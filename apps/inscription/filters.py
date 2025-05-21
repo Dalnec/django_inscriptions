@@ -5,7 +5,7 @@ from .models import *
 
 class InscriptionFilter(django_filters.FilterSet):
     activity = django_filters.CharFilter(field_name="group__activity__id", lookup_expr="exact")
-    search = django_filters.CharFilter(method='search_filter')
+    search = django_filters.CharFilter(method='search_filter', label="Search")
     church = django_filters.CharFilter(field_name="person__church__id", lookup_expr="exact")
     
     class Meta:

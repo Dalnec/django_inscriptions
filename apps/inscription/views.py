@@ -165,18 +165,20 @@ class InscriptionGroupView(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='register-group')
     def register_group(self, request):
-        print(request.data)
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            group = serializer.save(
-                vouchergroup=self.generate_code()
-            )
-            if group.activity.send_email:
-                if group.activity.emails:
-                    send_voucher_email(group, group.activity.emails)
-            return Response({"message": "Grupo registrado con éxito", "group_id": group.id}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                group = serializer.save(
+                    vouchergroup=self.generate_code()
+                )
+                if group.activity.send_email:
+                    if group.activity.emails:
+                        send_voucher_email(group, group.activity.emails)
+                return Response({"message": "Grupo registrado con éxito", "group_id": group.id}, status=status.HTTP_201_CREATED)
+            # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
     @action(detail=True, methods=['post'])
     def send_email(self, request, pk):
         instance = self.get_object()
