@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.inscription.functions import send_voucher_email
+from django.db import transaction
 
 from .models import *
 from .serializers import *
@@ -182,13 +183,14 @@ class InscriptionGroupView(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='register-group')
     def register_group(self, request):
         try:
-            serializer = self.get_serializer(data=request.data)
-            if serializer.is_valid():
-                group = serializer.save( vouchergroup=self.generate_code() )
-                if group.activity.send_email and group.activity.emails:
-                        send_voucher_email(group, group.activity.emails)
-                return Response({"message": "Grupo registrado con éxito", "group_id": group.id}, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            with transaction.atomic():
+                serializer = self.get_serializer(data=request.data)
+                if serializer.is_valid():
+                    group = serializer.save( vouchergroup=self.generate_code() )
+                    if group.activity.send_email and group.activity.emails:
+                            send_voucher_email(group, group.activity.emails)
+                    return Response({"message": "Grupo registrado con éxito", "group_id": group.id}, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         

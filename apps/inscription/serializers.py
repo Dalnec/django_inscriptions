@@ -35,15 +35,34 @@ class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
                 already_registered.append(f"{person['doc_num']} {person['names']} {person['lastnames']}")
         if already_registered:
             raise serializers.ValidationError(f"Las siguientes personas ya están registradas en el evento actual: {', '.join(already_registered)}")
-                
+        
+        # Validar que no existan personas con el mismo documento
+        doc_nums = [person["doc_num"] for person in people_data]
+        if len(doc_nums) != len(set(doc_nums)):
+            raise serializers.ValidationError("Existen personas con el mismo documento.")
+        
+        # Si la persona ya se encuentra registada en el sistema
+        validated_people = []
+        for person in people_data:
+            # p = Person.objects.filter(doc_num=person["doc_num"])
+            # if p.exists():
+            #     # actualizar nuevos valores
+            #     p.update(**person)
+            # else:
+            #     # crear nueva persona
+            #     Person.objects.create(**person)
+            # update_or_create
+            p, _ = Person.objects.update_or_create(doc_num=person["doc_num"], defaults=person)
+            validated_people.append(p)
+
         group = InscriptionGroup.objects.create(**validated_data)
 
-        for person_data in people_data:
-            doc_num = person_data.get("doc_num")
-            person, _ = Person.objects.get_or_create(doc_num=doc_num, defaults=person_data)
+        for person_data in validated_people:
+            # doc_num = person_data.get("doc_num")
+            # person, _ = Person.objects.get_or_create(doc_num=doc_num, defaults=person_data)
             Inscription.objects.create(
                 group=group,
-                person=person,
+                person=person_data, #person,
                 amount=group.tarifa.price,  # o ajustado individualmente si es necesario
                 status="P",
             )
