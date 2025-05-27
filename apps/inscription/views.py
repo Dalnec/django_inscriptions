@@ -156,7 +156,7 @@ class InscriptionView(viewsets.GenericViewSet):
             status=status.HTTP_403_FORBIDDEN,
         )
     
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], serializer_class=InscriptionSendEmailSerializer, url_path='send-email')
     def send_email(self, request, pk=None, *args, **kwargs):
         instance = self.get_object()
         email = request.data.get('email', None)

@@ -87,3 +87,7 @@ class InscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Inscription
         fields = '__all__'
+
+
+class InscriptionSendEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
