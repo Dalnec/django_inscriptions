@@ -168,7 +168,7 @@ class InscriptionView(viewsets.GenericViewSet):
             return Response( {"error": "El formato del correo es inválido"}, status=status.HTTP_400_BAD_REQUEST )
         
         group = instance.group
-        send_inscription_email(group, [email])
+        send_voucher_email(group, [email])
         return Response({"message": "Correo enviado con exito"}, status=status.HTTP_200_OK)
     
 
