@@ -63,7 +63,7 @@ class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
             Inscription.objects.create(
                 group=group,
                 person=person_data, #person,
-                amount=group.tarifa.price,  # o ajustado individualmente si es necesario
+                amount=validated_data["voucheramount"], #group.tarifa.price,  # o ajustado individualmente si es necesario
                 status="P",
             )
 
