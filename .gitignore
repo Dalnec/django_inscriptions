@@ -15,10 +15,10 @@ __pycache__/
 *.log
 
 # migrations
-migrations/*
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
+#migrations/*
+#**/migrations/**
+#!**/migrations
+#!**/migrations/__init__.py
 
 # venv
 .env
@@ -33,7 +33,7 @@ venv
 package-lock.json
 
 staticfiles/*
-!staticfiles/.gitkeep 
+!staticfiles/.gitkeep
 .vscode/symbols.json
 .vscode/*
 
