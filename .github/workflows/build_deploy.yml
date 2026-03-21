@@ -1,22 +1,27 @@
-# name: Build and Deploy
-# on: [push]
-# jobs:
-#   build-and-deploy:
-#     name: Build and Deploy
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: download changes and build
-#         uses: appleboy/ssh-action@v1.2.2
-#         with:
-#           host: ${{ secrets.HOST }}
-#           username: ${{ secrets.USERNAME }}
-#           key: ${{ secrets.KEY }}
-#           passphrase: ${{ secrets.PASSPHRASE }}
-#           script: |
-#             cd /home/tsi/inscriptions/demoinscriptions/django_inscriptions
-#             source ../bin/activate
-#             git pull
-#             python manage.py makemigrations
-#             python manage.py migrate
-#             python manage.py collectstatic --noinput
-#             supervisorctl restart demoinscriptions
+name: Deploy Demo Django
+
+on:
+  push:
+    branches:
+      - codexdeploy
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-demo-django
+  cancel-in-progress: true
+
+jobs:
+  deploy-demo-django:
+    name: Deploy Demo Django
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend demo via SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            set -e
+            sudo -n /usr/local/bin/deploy_jni_demo_backend.sh codexdeploy

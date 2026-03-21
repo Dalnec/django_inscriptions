@@ -123,3 +123,30 @@ inscriptions/
 ## 📄 Licencia
 
 Este proyecto está bajo la licencia MIT.
+
+## CI Demo Deploy (root script)
+
+This repository includes `deploy/deploy_jni_demo_backend.sh` as the server-side deploy script used by GitHub Actions.
+
+### Server setup (one time)
+
+1. Copy script to root path:
+
+```bash
+sudo install -o root -g root -m 750 deploy/deploy_jni_demo_backend.sh /usr/local/bin/deploy_jni_demo_backend.sh
+```
+
+2. Allow `tsi` to run only this script without password:
+
+```bash
+echo 'tsi ALL=(root) NOPASSWD: /usr/local/bin/deploy_jni_demo_backend.sh' | sudo tee /etc/sudoers.d/jni-demo-deploy
+sudo visudo -cf /etc/sudoers.d/jni-demo-deploy
+```
+
+3. Manual test as `tsi`:
+
+```bash
+sudo -n /usr/local/bin/deploy_jni_demo_backend.sh codexdeploy
+```
+
+The workflow `.github/workflows/build_deploy.yml` calls this command remotely over SSH.
