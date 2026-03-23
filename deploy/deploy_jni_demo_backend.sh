@@ -2,7 +2,7 @@
 set -euo pipefail
 
 APP_DIR="/home/tsi/dl/jni-inscriptions-demo"
-BRANCH="${1:-codexdeploy}"
+# BRANCH="${1:-codexdeploy}"
 
 cd "$APP_DIR"
 
