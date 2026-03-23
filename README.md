@@ -150,3 +150,14 @@ sudo -n /usr/local/bin/deploy_jni_demo_backend.sh codexdeploy
 ```
 
 The workflow `.github/workflows/build_deploy.yml` calls this command remotely over SSH.
+
+### Important after script updates
+
+If `deploy/deploy_jni_demo_backend.sh` changes in git, reinstall it to root path:
+
+```bash
+cd /home/tsi/dl/jni-inscriptions-demo/django_inscriptions
+sudo install -o root -g root -m 750 deploy/deploy_jni_demo_backend.sh /usr/local/bin/deploy_jni_demo_backend.sh
+```
+
+The GitHub Action executes `/usr/local/bin/deploy_jni_demo_backend.sh`, not the repository copy directly.
