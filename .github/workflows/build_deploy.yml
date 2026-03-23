@@ -24,4 +24,4 @@ jobs:
           # passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             set -e
-            sudo -n /usr/local/bin/deploy_jni_demo_backend.sh codexdeploy
+            sudo -n /usr/local/bin/deploy_jni_demo_backend.sh
