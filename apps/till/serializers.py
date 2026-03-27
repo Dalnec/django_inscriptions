@@ -11,10 +11,19 @@ class ConceptSerializer(serializers.ModelSerializer):
 
 
 class MovementSerializer(serializers.ModelSerializer):
-    concept_description = serializers.CharField(source="concept.description", read_only=True)
+    concept_description = serializers.CharField(
+        source="concept.description", read_only=True
+    )
     concept_type = serializers.CharField(source="concept.concept_type", read_only=True)
     signed_amount = serializers.DecimalField(
         max_digits=10, decimal_places=2, read_only=True
+    )
+    payment_method_label = serializers.CharField(
+        source="payment_method.description", read_only=True
+    )
+    username = serializers.CharField(source="user.username", read_only=True)
+    activity_label = serializers.CharField(
+        source="activity.description", read_only=True
     )
 
     class Meta:
