@@ -75,6 +75,13 @@ class Movement(TimeStampedModel):
         blank=True,
         related_name="movements",
     )
+    inscription_group = models.ForeignKey(
+        "inscription.InscriptionGroup",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="movements",
+    )
     user = models.ForeignKey(
         "user.User",
         on_delete=models.SET_NULL,
@@ -117,6 +124,11 @@ class Movement(TimeStampedModel):
                 condition=models.Q(reversal_of__isnull=False),
                 name="till_movement_one_reversal",
             ),
+            models.UniqueConstraint(
+                fields=["inscription_group"],
+                condition=models.Q(inscription_group__isnull=False),
+                name="till_movement_one_group_payment",
+            ),
         ]
 
     def __str__(self):
@@ -136,6 +148,13 @@ class Movement(TimeStampedModel):
                 errors["activity"] = (
                     "La actividad del movimiento debe coincidir con la actividad de la "
                     "inscripcion."
+                )
+        if self.inscription_group_id:
+            inscription_group_activity_id = self.inscription_group.activity_id
+            if inscription_group_activity_id != self.activity_id:
+                errors["activity"] = (
+                    "La actividad del movimiento debe coincidir con la actividad del "
+                    "grupo de inscripcion."
                 )
         if self.reversal_of_id:
             if self.status != MovementStatus.VOID:

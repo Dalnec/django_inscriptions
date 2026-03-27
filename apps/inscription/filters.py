@@ -7,11 +7,12 @@ class InscriptionFilter(django_filters.FilterSet):
     activity = django_filters.CharFilter(field_name="group__activity__id", lookup_expr="exact")
     search = django_filters.CharFilter(method='search_filter', label="Search")
     church = django_filters.CharFilter(field_name="person__church__id", lookup_expr="exact")
+    payment_status = django_filters.CharFilter(field_name="group__payment_status", lookup_expr="exact")
     
     class Meta:
         model = Inscription
         fields = [ 'checkinat', 'status', 'amount', 'observations', 'person', 
-                  'activity', 'search', 'church']
+                  'activity', 'search', 'church', 'payment_status']
     
     def search_filter(self, queryset, name, value):
         if value:
@@ -32,7 +33,7 @@ class InscriptionGroupFilter(django_filters.FilterSet):
     class Meta:
         model = InscriptionGroup
         fields = [ "vouchergroup", "voucheramount", "activity", 
-                "user", "paymentmethod", "tarifa", ]
+                "user", "paymentmethod", "tarifa", "payment_status" ]
 
 class InscriptionPagination(PageNumberPagination):
     page_size_query_param = "page_size"

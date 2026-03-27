@@ -37,6 +37,13 @@ def path_and_rename(instance, filename):
     return upload_to + filename
 
 class InscriptionGroup(TimeStampedModel):
+    PAYMENT_STATUS = [
+        ("P", "PENDIENTE"),
+        ("C", "CONFIRMADO"),
+        ("R", "RECHAZADO"),
+        ("E", "ERROR"),
+    ]
+
     vouchergroup = models.CharField(max_length=100, blank=True, null=True)
     voucherfile = models.ImageField(upload_to=path_and_rename, blank=True, null=True)
     voucheramount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -44,6 +51,7 @@ class InscriptionGroup(TimeStampedModel):
     user = models.ForeignKey('user.User', models.CASCADE, blank=True, null=True, related_name="fk_InscriptionGroupUser")
     paymentmethod = models.ForeignKey('PaymentMethod', models.DO_NOTHING, blank=True, null=True, related_name="fk_InscriptionGroupMethod")
     tarifa = models.ForeignKey('Tarifa', models.CASCADE, blank=True, null=True, related_name="fk_InscriptionGroupTarifa")
+    payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS, default="P")
 
     class Meta:
         db_table = 'InscriptionGroup'
@@ -60,12 +68,15 @@ class InscriptionGroup(TimeStampedModel):
         # self.vouchergroup = f"G{next_number:04d}"
         # self.save()
 
+    @property
+    def payment_status_description(self):
+        return dict(self.PAYMENT_STATUS).get(self.payment_status, 'Unknown')
+
 
 class Inscription(TimeStampedModel):
     STATUS_INSCRIPTION = [
         ("P", "PENDIENTE"),
         ("C", "CONFIRMADO"),
-        ("A", "ASISTIO"),
         ("R", "RECHAZADO"),
         ("E", "ERROR"),
     ]
@@ -89,6 +100,10 @@ class Inscription(TimeStampedModel):
     @property
     def status_description(self):
         return dict(self.STATUS_INSCRIPTION).get(self.status, 'Unknown')
+
+    @property
+    def attended(self):
+        return self.checkinat is not None
     
     def send_email(self, subject='Inscripción', body=None, from_email='dalnec1405@gmail.com', to_email=['daleonco_1995@hotmail.com']):
         from django.core.mail import EmailMessage

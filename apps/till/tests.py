@@ -147,6 +147,23 @@ class TillModelsTest(TestCase):
         with self.assertRaises(ValidationError):
             movement.save()
 
+    def test_inscription_group_activity_must_match_movement_activity(self):
+        group = InscriptionGroup.objects.create(
+            vouchergroup="G0002",
+            voucheramount=Decimal("150.00"),
+            activity=self.activity,
+            user=self.user,
+        )
+        movement = Movement(
+            activity=self.another_activity,
+            concept=self.income_concept,
+            amount=Decimal("150.00"),
+            inscription_group=group,
+        )
+
+        with self.assertRaises(ValidationError):
+            movement.save()
+
 
 class TillApiTest(APITestCase):
     def setUp(self):
@@ -155,9 +172,10 @@ class TillApiTest(APITestCase):
             title="Evento API Caja",
             start_date="2026-03-25 09:00:00",
             end_date="2026-03-25 18:00:00",
+            settings={"inscription": {"send_email": False, "emails": []}},
         )
         self.concept = Concept.objects.create(
-            description="INSCRIPCION API",
+            description="INSCRIPCION",
             concept_type=ConceptType.INCOME,
         )
         self.expense_concept = Concept.objects.create(
@@ -171,6 +189,17 @@ class TillApiTest(APITestCase):
         self.transfer_payment_method = PaymentMethod.objects.create(
             description="TRANSFERENCIA",
             active=True,
+        )
+        self.tarifa = self._create_tarifa()
+
+    def _create_tarifa(self):
+        from apps.inscription.models import Tarifa
+
+        return Tarifa.objects.create(
+            description="GENERAL",
+            price=Decimal("50.00"),
+            active=True,
+            selected=True,
         )
 
     def _create_inscription_for_activity(self, activity, doc_num):
@@ -198,6 +227,44 @@ class TillApiTest(APITestCase):
             person=person,
             status="P",
         )
+
+    def _build_register_group_payload(self, voucheramount="100.00"):
+        document_type = DocumentType.objects.create(
+            description=f"DOC-PAYLOAD-{DocumentType.objects.count() + 1}",
+            active=True,
+        )
+        return {
+            "activity": self.activity.id,
+            "voucheramount": voucheramount,
+            "paymentmethod": self.cash_payment_method.id,
+            "tarifa": self.tarifa.id,
+            "user": self.user.id,
+            "people": [
+                {
+                    "doc_num": "77112233",
+                    "names": "Ana",
+                    "lastnames": "Lopez",
+                    "status": True,
+                    "documenttype": document_type.id,
+                },
+                {
+                    "doc_num": "77112234",
+                    "names": "Luis",
+                    "lastnames": "Diaz",
+                    "status": True,
+                    "documenttype": document_type.id,
+                },
+            ],
+        }
+
+    def _register_group(self, voucheramount="100.00"):
+        response = self.client.post(
+            reverse("inscription-group-register-group"),
+            self._build_register_group_payload(voucheramount=voucheramount),
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        return InscriptionGroup.objects.get(pk=response.data["group_id"])
 
     def test_create_and_list_concepts(self):
         create_url = reverse("till-concept-list")
@@ -283,6 +350,111 @@ class TillApiTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("activity", response.data)
 
+    def test_register_group_starts_pending_without_cash_movement(self):
+        group = self._register_group(voucheramount="100.00")
+
+        self.assertEqual(group.fk_InscriptionGroup.count(), 2)
+        self.assertEqual(group.payment_status, "P")
+        self.assertEqual(Movement.objects.filter(inscription_group=group).count(), 0)
+
+    def test_confirm_payment_creates_posted_cash_movement(self):
+        group = self._register_group(voucheramount="100.00")
+        url = reverse("inscription-group-confirm-payment", args=[group.id])
+
+        response = self.client.post(url, {}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        group.refresh_from_db()
+        movement = Movement.objects.get(inscription_group=group)
+        self.assertEqual(group.payment_status, "C")
+        self.assertEqual(movement.amount, Decimal("100.00"))
+        self.assertEqual(movement.status, MovementStatus.POSTED)
+        self.assertEqual(movement.reference, group.vouchergroup)
+        self.assertEqual(movement.concept_id, self.concept.id)
+        self.assertEqual(movement.payment_method_id, self.cash_payment_method.id)
+        self.assertEqual(movement.user_id, self.user.id)
+        self.assertEqual(
+            set(group.fk_InscriptionGroup.values_list("status", flat=True)),
+            {"C"},
+        )
+
+    def test_confirm_payment_rolls_back_when_cash_concept_is_missing(self):
+        group = self._register_group(voucheramount="80.00")
+        self.concept.delete()
+        url = reverse("inscription-group-confirm-payment", args=[group.id])
+
+        response = self.client.post(url, {}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        group.refresh_from_db()
+        self.assertEqual(group.payment_status, "P")
+        self.assertEqual(Movement.objects.count(), 0)
+
+    def test_confirm_payment_is_idempotent_for_group(self):
+        group = self._register_group(voucheramount="90.00")
+        url = reverse("inscription-group-confirm-payment", args=[group.id])
+
+        first_response = self.client.post(url, {}, format="json")
+        second_response = self.client.post(url, {}, format="json")
+
+        self.assertEqual(first_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(second_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Movement.objects.filter(inscription_group=group).count(), 1)
+
+    def test_reject_payment_updates_group_without_cash_movement(self):
+        group = self._register_group(voucheramount="70.00")
+        url = reverse("inscription-group-reject-payment", args=[group.id])
+
+        response = self.client.post(url, {}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        group.refresh_from_db()
+        self.assertEqual(group.payment_status, "R")
+        self.assertEqual(Movement.objects.filter(inscription_group=group).count(), 0)
+        self.assertEqual(
+            set(group.fk_InscriptionGroup.values_list("status", flat=True)),
+            {"R"},
+        )
+
+    def test_reject_payment_fails_when_cash_movement_exists(self):
+        group = self._register_group(voucheramount="70.00")
+        self.client.post(
+            reverse("inscription-group-confirm-payment", args=[group.id]),
+            {},
+            format="json",
+        )
+        url = reverse("inscription-group-reject-payment", args=[group.id])
+
+        response = self.client.post(url, {}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        group.refresh_from_db()
+        self.assertEqual(group.payment_status, "C")
+        self.assertEqual(Movement.objects.filter(inscription_group=group).count(), 1)
+
+    def test_updating_checkin_does_not_change_group_payment_status(self):
+        group = self._register_group(voucheramount="70.00")
+        inscription = group.fk_InscriptionGroup.first()
+        url = reverse("inscription-detail", args=[inscription.id])
+
+        response = self.client.put(
+            url,
+            {
+                "amount": str(inscription.amount),
+                "observations": inscription.observations,
+                "checkinat": "2026-03-25T12:30:00",
+                "status": "R",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        inscription.refresh_from_db()
+        group.refresh_from_db()
+        self.assertIsNotNone(inscription.checkinat)
+        self.assertEqual(inscription.status, "P")
+        self.assertEqual(group.payment_status, "P")
+
     def test_summary_returns_totals_and_breakdown(self):
         Movement.objects.create(
             activity=self.activity,
@@ -365,3 +537,33 @@ class TillApiTest(APITestCase):
         self.assertEqual(response.data["meta"]["total_inscriptions"], "100.00")
         self.assertEqual(response.data["meta"]["cash_total"], "70.00")
         self.assertEqual(response.data["meta"]["movement_count"], 2)
+
+    def test_list_meta_counts_group_movements_as_inscriptions_and_filters_them(self):
+        group = InscriptionGroup.objects.create(
+            vouchergroup="GAPI999",
+            voucheramount=Decimal("120.00"),
+            activity=self.activity,
+            user=self.user,
+            paymentmethod=self.cash_payment_method,
+            tarifa=self.tarifa,
+        )
+        Movement.objects.create(
+            activity=self.activity,
+            concept=self.concept,
+            amount=Decimal("120.00"),
+            status=MovementStatus.POSTED,
+            inscription_group=group,
+            payment_method=self.cash_payment_method,
+            user=self.user,
+        )
+
+        url = reverse("till-movement-list")
+        response = self.client.get(
+            url,
+            {"activity": self.activity.id, "inscription_group": group.id},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["inscription_group"], group.id)
+        self.assertEqual(response.data["meta"]["total_inscriptions"], "120.00")

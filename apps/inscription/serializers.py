@@ -72,6 +72,7 @@ class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
 class InscriptionGroupSerializer(serializers.ModelSerializer):
     tarifa = TarifaSerializer(read_only=True)
     paymentmethod = PaymentMethodSerializer(read_only=True)
+    payment_status_description = serializers.ReadOnlyField()
     
     class Meta:
         model = InscriptionGroup
@@ -82,11 +83,18 @@ class InscriptionSerializer(serializers.ModelSerializer):
     group = InscriptionGroupSerializer(read_only=True)
     person = PersonSerializer(read_only=True)
     status_description = serializers.ReadOnlyField()
+    attended = serializers.ReadOnlyField()
 
 
     class Meta:
         model = Inscription
         fields = '__all__'
+
+    def validate_status(self, value):
+        allowed_status = {"P", "C", "R", "E"}
+        if value and value not in allowed_status:
+            raise serializers.ValidationError("Estado de inscripcion invalido.")
+        return value
 
 
 class InscriptionSendEmailSerializer(serializers.Serializer):

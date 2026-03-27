@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.inscription.functions import send_voucher_email
+from apps.inscription.services import confirm_group_payment, reject_group_payment
 from django.db import transaction
 
 from .models import *
@@ -94,7 +95,7 @@ class TarifaView(viewsets.GenericViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(status=instance.group.payment_status)
         return Response(serializer.data)
     
     def destroy(self, request, pk=None):
@@ -191,6 +192,24 @@ class InscriptionGroupView(viewsets.ModelViewSet):
                             send_voucher_email(group, group.activity.emails)
                     return Response({"message": "Grupo registrado con éxito", "group_id": group.id}, status=status.HTTP_201_CREATED)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'], url_path='confirm-payment')
+    def confirm_payment(self, request, pk=None):
+        try:
+            group = self.get_object()
+            confirm_group_payment(group)
+            return Response({"message": "Pago confirmado con éxito"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'], url_path='reject-payment')
+    def reject_payment(self, request, pk=None):
+        try:
+            group = self.get_object()
+            reject_group_payment(group)
+            return Response({"message": "Pago rechazado con éxito"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         

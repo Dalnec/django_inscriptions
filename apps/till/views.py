@@ -62,7 +62,13 @@ class ConceptViewSet(viewsets.GenericViewSet):
 class MovementViewSet(viewsets.GenericViewSet):
     serializer_class = MovementSerializer
     queryset = Movement.objects.select_related(
-        "activity", "concept", "inscription", "payment_method", "user", "reversal_of"
+        "activity",
+        "concept",
+        "inscription",
+        "inscription_group",
+        "payment_method",
+        "user",
+        "reversal_of",
     ).order_by("-movement_at", "-id")
     filter_backends = [DjangoFilterBackend]
     filterset_class = MovementFilter
@@ -96,6 +102,7 @@ class MovementViewSet(viewsets.GenericViewSet):
                 Sum(
                     Case(
                         When(inscription__isnull=False, then=F("amount")),
+                        When(inscription_group__isnull=False, then=F("amount")),
                         default=Value(0),
                         output_field=DecimalField(max_digits=12, decimal_places=2),
                     )
@@ -206,4 +213,3 @@ class MovementViewSet(viewsets.GenericViewSet):
             ],
         }
         return Response(response_data, status=status.HTTP_200_OK)
-

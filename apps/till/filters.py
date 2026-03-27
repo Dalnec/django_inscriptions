@@ -36,6 +36,7 @@ class MovementFilter(django_filters.FilterSet):
             "concept",
             "concept_type",
             "inscription",
+            "inscription_group",
             "user",
             "payment_method",
             "movement_at_from",
@@ -54,4 +55,3 @@ class MovementFilter(django_filters.FilterSet):
 class MovementPagination(PageNumberPagination):
     page_size_query_param = "page_size"
     page_size = 20
-
