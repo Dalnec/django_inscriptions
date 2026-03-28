@@ -56,14 +56,14 @@ class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
             validated_people.append(p)
 
         group = InscriptionGroup.objects.create(**validated_data)
-
+        amount_per_person = validated_data["voucheramount"] / len(validated_people)
         for person_data in validated_people:
             # doc_num = person_data.get("doc_num")
             # person, _ = Person.objects.get_or_create(doc_num=doc_num, defaults=person_data)
             Inscription.objects.create(
                 group=group,
                 person=person_data, #person,
-                amount=validated_data["voucheramount"], #group.tarifa.price,  # o ajustado individualmente si es necesario
+                amount=amount_per_person,#validated_data["voucheramount"], #group.tarifa.price,  # o ajustado individualmente si es necesario
                 status="P",
             )
 
