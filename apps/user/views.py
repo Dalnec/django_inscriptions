@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from django_inscriptions.apps.user.filters import UserFilter, UserPagination
+from apps.user.filters import UserFilter, UserPagination
 
 from .models import Profile, User
 from .serializer import (
