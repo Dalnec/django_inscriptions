@@ -2,11 +2,19 @@ from model_utils.models import TimeStampedModel
 from django.db import models
 
 class PaymentMethod(models.Model):
-    description = models.CharField(unique=True, max_length=50)
+    description = models.CharField(max_length=50)
     account = models.CharField(max_length=50, blank=True, null=True)
     cci = models.CharField(max_length=50, blank=True, null=True)
     icon = models.ImageField(upload_to='icons/', blank=True, null=True)
     active = models.BooleanField()
+    activity = models.ForeignKey(
+        "activity.Activity",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name="activity",
+        related_name="activities",
+    )
 
     class Meta:
         db_table = 'PaymentMethod'
@@ -17,10 +25,18 @@ class PaymentMethod(models.Model):
         return self.description
 
 class Tarifa(TimeStampedModel):
-    description = models.CharField(unique=True, max_length=50)
+    description = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     active = models.BooleanField(default=True)
     selected = models.BooleanField(default=True)
+    activity = models.ForeignKey(
+        "activity.Activity",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name="activity",
+        related_name="activities",
+    )
 
     class Meta:
         db_table = 'Tarifa'
