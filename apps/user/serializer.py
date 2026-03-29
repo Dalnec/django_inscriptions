@@ -1,58 +1,68 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import DetailPermission, Permission, Profile, User
+from .models import Profile, User
 
-class PermissionSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Permission
-        fields = '__all__'
+# class PermissionSerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         model = Permission
+#         fields = '__all__'
+
 
 class PasswordSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
 
+
 class UserSerializer(serializers.ModelSerializer):
-    profile_description = serializers.ReadOnlyField(source='profile.description')
-    
+    profile_description = serializers.ReadOnlyField(source="profile.description")
+
     class Meta:
         model = User
-        fields = ('id', 'names', 'email', 'lastname', 
-                'username', 'password', 'is_active', 'profile', 'profile_description')
-        extra_kwargs = {'password': {'read_only': True}}
+        fields = (
+            "id",
+            "names",
+            "email",
+            "lastname",
+            "username",
+            "password",
+            "is_active",
+            "profile",
+            "profile_description",
+        )
+        extra_kwargs = {"password": {"read_only": True}}
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = "__all__"
 
 
-class DetailPermissionSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = DetailPermission
-        fields = ('id', 'permission', 'state')
+# class DetailPermissionSerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         model = DetailPermission
+#         fields = ('id', 'permission', 'state')
 
 
-class LoginPermission(serializers.ModelSerializer):
-    permission = serializers.ReadOnlyField(source='permission.description')
-    ref = serializers.ReadOnlyField(source='permission.ref')
-    
-    class Meta:
-        model = DetailPermission
-        fields = ('permission', 'ref', 'state')
+# class LoginPermission(serializers.ModelSerializer):
+#     permission = serializers.ReadOnlyField(source='permission.description')
+#     ref = serializers.ReadOnlyField(source='permission.ref')
+
+#     class Meta:
+#         model = DetailPermission
+#         fields = ('permission', 'ref', 'state')
 
 
 class UserLogin(serializers.ModelSerializer):
     # user_permission = LoginPermission(many=True)
-    profile_description = serializers.ReadOnlyField(source='profile.description')
-    
+    profile_description = serializers.ReadOnlyField(source="profile.description")
+
     class Meta:
         model = User
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TokenSerializer(TokenObtainPairSerializer):
