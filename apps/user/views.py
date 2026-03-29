@@ -1,24 +1,18 @@
 from datetime import datetime
 
-import django_filters
 from django.contrib.auth import authenticate
-from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import update_last_login
-from django.contrib.sessions.models import Session
-from django.db.models.query_utils import Q
-from django.http.response import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics, status, viewsets
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.pagination import PageNumberPagination
 
 # Import for Token
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+
+from django_inscriptions.apps.user.filters import UserFilter, UserPagination
 
 from .models import Profile, User
 from .serializer import (
@@ -29,25 +23,6 @@ from .serializer import (
     UserLogin,
     UserSerializer,
 )
-
-
-# Paginacion General
-class UserPagination(PageNumberPagination):
-    page_size = 15
-    page_size_query_param = "page_size"
-    max_page_size = 1000
-
-
-# Vistas de Clientes
-class UserFilter(django_filters.FilterSet):
-    search = django_filters.CharFilter(label="search", method="search_data")
-
-    class Meta:
-        model = User
-        fields = ["search"]
-
-    def search_data(self, queryset, name, value):
-        return queryset.filter(Q(names__icontains=value) | Q(lastname__icontains=value))
 
 
 @extend_schema(tags=["User"])
