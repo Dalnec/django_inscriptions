@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from .managers import UserManager
-
-# Create your models here.
 
 
 class Profile(models.Model):
@@ -24,12 +23,13 @@ class Profile(models.Model):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    # GENDER_CHOICES = (
-    #     ('M', 'Masculino'),
-    #     ('F', 'Femenino'),
-    # )
-
-    username = models.CharField(max_length=11, unique=True)
+    # Este es el que Django usa para el login (debe ser único)
+    # Formato interno: "SHORTNAME_USERNAME"
+    username = models.CharField(max_length=50, unique=True)
+    # Este es lo que el usuario escribe en el formulario
+    login_name = models.CharField(
+        max_length=11, verbose_name="Nombre de usuario", null=True, blank=True
+    )
     names = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(unique=True, blank=True, null=True)
     lastname = models.CharField(max_length=30, null=True, blank=True)
@@ -62,11 +62,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def save(self, **kwargs):
-        self.username = self.username.upper()
-        # self.names = self.names.upper()
-        # self.lastname = self.lastname.upper()
-        super(User, self).save()
+    def save(self, *args, **kwargs):
+        # Antes de guardar, construimos el username único
+        if self.activity and self.login_name:
+            self.username = f"{self.activity.shortname}_{self.login_name}".upper()
+
+        # Validación de "Máximo 2 por actividad" que pediste antes
+        if not self.pk:  # Solo al crear uno nuevo
+            exists_count = User.objects.filter(
+                login_name=self.login_name.upper(), activity=self.activity
+            ).count()
+            if exists_count >= 2:
+                raise ValueError(
+                    "Ya existen 2 usuarios con este nombre en este evento."
+                )
+
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "Usuarios"
@@ -74,4 +85,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         ordering = ["-id"]
 
     def __str__(self):
-        return f"{self.names}-{self.lastname}"
+        return (
+            f"{self.login_name} ({self.activity.shortname if self.activity else 'N/A'})"
+        )

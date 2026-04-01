@@ -1,11 +1,8 @@
-from datetime import datetime
-
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics, status, viewsets
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action
 
 # Import for Token
 from rest_framework.response import Response
@@ -16,10 +13,9 @@ from apps.user.filters import UserFilter, UserPagination
 
 from .models import Profile, User
 from .serializer import (
+    CustomTokenSerializer,
     PasswordSerializer,
-    # PermissionSerializer,
     ProfileSerializer,
-    TokenSerializer,
     UserLogin,
     UserSerializer,
 )
@@ -27,7 +23,6 @@ from .serializer import (
 
 @extend_schema(tags=["User"])
 class UserView(viewsets.ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
     queryset = User.objects.all().exclude(is_superuser=True)
     serializer_class = UserSerializer
     filter_backends = [DjangoFilterBackend]
@@ -39,11 +34,6 @@ class UserView(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         user = User.objects.create(**serializer.validated_data)
         user.set_password(request.data["password"])
-
-        # permission = request.data['user_permission']
-        # for a in permission:
-        #     DetailPermission.objects.create(user=user,
-        #         permission = Permission.objects.get(pk=a))
         user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -89,19 +79,6 @@ class UserView(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class PermissionView(viewsets.ModelViewSet):
-#     queryset = Permission.objects.all()
-#     serializer_class = PermissionSerializer
-
-#     def destroy(self, request, *args, **kwargs):
-#         permission = self.get_object()
-#         detailper = DetailPermission.objects.filter(permission=permission)
-#         if detailper:
-#             return Response({'error': 'El permiso ya fue asignado a un usuario.'}, status=status.HTTP_409_CONFLICT)
-#         permission.delete()
-#         return Response({"Estado": "Se elimino Correctamente."}, status=status.HTTP_200_OK)
-
-
 @extend_schema(tags=["Profile"])
 class ProfileView(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
@@ -122,34 +99,34 @@ class ProfileView(viewsets.ModelViewSet):
 
 
 class Login(TokenObtainPairView):
-    serializer_class = TokenSerializer
+    serializer_class = CustomTokenSerializer
 
     def post(self, request, *args, **kwargs):
-        username = request.data.get("username", "")
-        password = request.data.get("password", "")
-        print(username, password)
-        user = authenticate(username=username, password=password)
+        serializer = self.get_serializer(data=request.data)
 
-        if user:
-            login_serializer = self.serializer_class(data=request.data)
-            if login_serializer.is_valid():
-                update_last_login(datetime.now(), user)
-                user_serializer = UserLogin(user)
-                return Response(
-                    {
-                        "token": login_serializer.validated_data.get("access"),
-                        "user": user_serializer.data,
-                    },
-                    status=status.HTTP_200_OK,
-                )
+        try:
+            serializer.is_valid(raise_exception=True)
+            user = serializer.user
+
+            # Actualizamos último login
+            update_last_login(None, user)
+
+            # Serializamos la respuesta con los datos de UserLogin que mejoramos antes
+            user_data = UserLogin(user).data
+
             return Response(
-                {"error": "Contraseña o usuario incorrectos."},
+                {
+                    "token": serializer.validated_data.get("access"),
+                    "user": user_data,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception:
+            return Response(
+                {"error": "Credenciales inválidas para este evento."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        return Response(
-            {"error": "Contraseña o usuario incorrectos."},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
 
 
 class Logout(generics.GenericAPIView):
