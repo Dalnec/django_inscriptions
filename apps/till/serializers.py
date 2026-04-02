@@ -21,7 +21,7 @@ class MovementSerializer(serializers.ModelSerializer):
     payment_method_label = serializers.CharField(
         source="payment_method.description", read_only=True
     )
-    username = serializers.CharField(source="user.username", read_only=True)
+    username = serializers.SerializerMethodField()
     activity_label = serializers.CharField(
         source="activity.description", read_only=True
     )
@@ -30,6 +30,11 @@ class MovementSerializer(serializers.ModelSerializer):
         model = Movement
         fields = "__all__"
         read_only_fields = ("created", "modified")
+
+    def get_username(self, obj):
+        if obj.user:
+            return obj.user.login_name if obj.user.login_name else obj.user.username
+        return None
 
     def create(self, validated_data):
         try:
