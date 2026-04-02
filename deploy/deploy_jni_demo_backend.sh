@@ -2,11 +2,11 @@
 set -euo pipefail
 
 APP_DIR="/home/tsi/dl/jni-inscriptions-demo"
-# BRANCH="${1:-codexdeploy}"
+BRANCH="${1:-codexdeploy}"
 
 cd "$APP_DIR"
 
-# git fetch origin
+git fetch origin
 # if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
 #   git checkout "$BRANCH"
 # else
@@ -20,8 +20,7 @@ cd "$APP_DIR"
 #   fi
 # fi
 
-git pull
-# git pull origin "$BRANCH"
+git pull origin "$BRANCH"
 # git submodule sync --recursive
 # git submodule update --init --recursive
 
