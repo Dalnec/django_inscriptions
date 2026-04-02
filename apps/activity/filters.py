@@ -41,7 +41,7 @@ class ActivityFilter(django_filters.FilterSet):
             "start_date",
             "end_date",
             "is_active",
-            "settings",
+            # "settings",
             "shortname",
         ]
 
