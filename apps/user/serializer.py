@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from rest_framework import exceptions, serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -69,28 +70,36 @@ class UserLogin(serializers.ModelSerializer):
 
 class CustomTokenSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        # 1. Obtenemos los datos crudos del request
         username_input = attrs.get("username")
+        password = attrs.get("password")
         shortname_input = self.context["request"].data.get("shortname")
-        # password = attrs.get("password")
 
+        # 1. Intentar autenticación como Superusuario primero (o usuario global)
+        # El superusuario no lleva prefijo de shortname
+        user = authenticate(username=username_input, password=password)
+
+        if user and user.is_superuser:
+            # Si es superusuario, saltamos la lógica del shortname
+            self.user = user
+            # Generamos los tokens manualmente (lo que hace super().validate internamente)
+            refresh = self.get_token(user)
+            data = {"refresh": str(refresh), "access": str(refresh.access_token)}
+            return data
+
+        # 2. Si no es superusuario, procedemos con la lógica de Evento
         if not shortname_input:
             raise exceptions.ValidationError(
-                "El nombre del evento (shortname) es obligatorio."
+                {"error": "El nombre del evento es requerido."}
             )
 
-        # 2. Construimos el username real (el que está en la DB)
+        # Construimos el username interno: "EVENTO_USUARIO"
         internal_username = f"{shortname_input}_{username_input}".upper()
-
-        # 3. Reemplazamos en los atributos para que el super().validate funcione
         attrs["username"] = internal_username
 
         try:
-            # Esto llama a authenticate() internamente usando el username compuesto
-            data = super().validate(attrs)
+            # Llamamos a la lógica estándar de SimpleJWT con el username compuesto
+            return super().validate(attrs)
         except exceptions.AuthenticationFailed:
             raise exceptions.AuthenticationFailed(
                 "Usuario, contraseña o evento incorrectos."
             )
-
-        return data

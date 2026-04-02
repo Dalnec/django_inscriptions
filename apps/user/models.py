@@ -63,19 +63,26 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def save(self, *args, **kwargs):
-        # Antes de guardar, construimos el username único
-        if self.activity and self.login_name:
-            self.username = f"{self.activity.shortname}_{self.login_name}".upper()
+        # Si es superusuario, no le forzamos el prefijo del evento
+        if self.is_superuser:
+            self.username = self.username.upper()
+        else:
+            # Lógica normal para usuarios de eventos
+            if self.activity and self.login_name:
+                self.username = f"{self.activity.shortname}_{self.login_name}".upper()
+            else:
+                # Esto evita errores si intentas guardar un usuario sin actividad
+                # (aunque por lógica de negocio siempre deberían tener una)
+                self.username = self.username.upper()
 
-        # Validación de "Máximo 2 por actividad" que pediste antes
-        if not self.pk:  # Solo al crear uno nuevo
+        # Validación de límite de 2 (solo para usuarios normales)
+        if not self.pk and not self.is_superuser:
             exists_count = User.objects.filter(
-                login_name=self.login_name.upper(), activity=self.activity
+                login_name=self.login_name.upper() if self.login_name else "", 
+                activity=self.activity
             ).count()
             if exists_count >= 2:
-                raise ValueError(
-                    "Ya existen 2 usuarios con este nombre en este evento."
-                )
+                raise ValueError("Ya existen 2 usuarios con este nombre en este evento.")
 
         super().save(*args, **kwargs)
 
