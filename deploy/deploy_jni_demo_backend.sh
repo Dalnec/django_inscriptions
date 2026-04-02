@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="/home/tsi/dl/jni-inscriptions-demo"
+APP_DIR="/home/tsi/dl/jni-inscriptions-demo/django_inscriptions"
 BRANCH="${1:-codexdeploy}"
 
 cd "$APP_DIR"

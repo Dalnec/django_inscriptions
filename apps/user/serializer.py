@@ -11,7 +11,12 @@ class PasswordSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile_description = serializers.ReadOnlyField(source="profile.description")
+    profile_description = serializers.ReadOnlyField(
+        source="profile.description", default=None
+    )
+
+    # Declaramos login_name como read_only ya que lo generamos nosotros
+    login_name = serializers.ReadOnlyField()
 
     class Meta:
         model = User
@@ -20,7 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
             "names",
             "email",
             "lastname",
-            "username",
+            "username",  # El front envía aquí el nombre sencillo
+            "login_name",
             "password",
             "is_active",
             "profile",
@@ -28,7 +34,33 @@ class UserSerializer(serializers.ModelSerializer):
             "permissions",
             "activity",
         )
-        extra_kwargs = {"password": {"read_only": True}}
+        # extra_kwargs = {
+        #     "password": {"write_only": True},  # Cambiado a write_only por seguridad
+        # }
+
+    def create(self, validated_data):
+        """
+        Sobrescribimos la creación para mover el valor del 'username'
+        del frontend al campo 'login_name' del modelo.
+        """
+        # 1. Extraemos el nombre que envió el front (ej: "JUAN123")
+        plain_username = validated_data.get("username")
+
+        # 2. Lo asignamos a login_name (el campo que no envía el front)
+        validated_data["login_name"] = plain_username
+
+        # 3. Extraemos el password para usar create_user (que lo hashea)
+        password = validated_data.pop("password", None)
+
+        # 4. Creamos la instancia. El método save() del modelo se encargará
+        # de unir el shortname de la actividad + login_name
+        user = User(**validated_data)
+
+        if password:
+            user.set_password(password)
+
+        user.save()
+        return user
 
 
 class ProfileSerializer(serializers.ModelSerializer):
