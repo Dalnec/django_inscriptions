@@ -6,7 +6,7 @@ BRANCH="${1:-codexdeploy}"
 
 cd "$APP_DIR"
 
-git fetch origin
+# git fetch origin
 # if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
 #   git checkout "$BRANCH"
 # else
