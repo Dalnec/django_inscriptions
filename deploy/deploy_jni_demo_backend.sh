@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="/home/tsi/dl/jni-inscriptions-demo/django_inscriptions"
+APP_DIR="/home/tsi/dl/jni-inscriptions-demo"
 BRANCH="${1:-codexdeploy}"
 
-cd "$APP_DIR"
+cd "$APP_DIR/django_inscriptions"
 
 # git fetch origin
 # if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
