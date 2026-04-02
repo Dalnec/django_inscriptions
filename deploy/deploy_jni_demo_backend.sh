@@ -49,7 +49,7 @@ git pull origin "$BRANCH"
 # if [[ ! -f django_inscriptions/.env.docker ]]; then
 #   cp django_inscriptions/.env.docker.demo django_inscriptions/.env.docker
 # fi
-
+cd "$APP_DIR"
 docker compose --env-file .env.demo -f docker-compose.yml -f docker-compose.demo.yml -p jni_demo up -d --build backend
 docker compose --env-file .env.demo -f docker-compose.yml -f docker-compose.demo.yml -p jni_demo exec -T backend python manage.py migrate --noinput
 docker compose --env-file .env.demo -f docker-compose.yml -f docker-compose.demo.yml -p jni_demo exec -T backend python manage.py collectstatic --noinput
