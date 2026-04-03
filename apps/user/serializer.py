@@ -34,9 +34,9 @@ class UserSerializer(serializers.ModelSerializer):
             "permissions",
             "activity",
         )
-        # extra_kwargs = {
-        #     "password": {"write_only": True},  # Cambiado a write_only por seguridad
-        # }
+        extra_kwargs = {
+            "password": {"read_only": True},  # Cambiado a write_only por seguridad
+        }
 
     def create(self, validated_data):
         """
