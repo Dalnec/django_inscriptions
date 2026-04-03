@@ -27,12 +27,16 @@ class MovementFilter(django_filters.FilterSet):
         field_name="movement_at", lookup_expr="lte"
     )
     search = django_filters.CharFilter(method="search_filter")
+    activity_shortname = django_filters.CharFilter(
+        field_name="activity__shortname", lookup_expr="exact"
+    )
 
     class Meta:
         model = Movement
         fields = [
             "status",
             "activity",
+            "activity_shortname",
             "concept",
             "concept_type",
             "inscription",

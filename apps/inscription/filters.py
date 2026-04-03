@@ -69,9 +69,13 @@ class InscriptionPagination(PageNumberPagination):
 
 
 class PaymentMethodFilter(django_filters.FilterSet):
+    activity_shortname = django_filters.CharFilter(
+        field_name="activity__shortname", lookup_expr="exact"
+    )
+
     class Meta:
         model = PaymentMethod
-        fields = ["description", "activity"]
+        fields = ["description", "activity", "activity_shortname",]
 
 
 class PaymentMethodPagination(PageNumberPagination):
@@ -81,9 +85,13 @@ class PaymentMethodPagination(PageNumberPagination):
 
 
 class TarifaFilter(django_filters.FilterSet):
+    activity_shortname = django_filters.CharFilter(
+        field_name="activity__shortname", lookup_expr="exact"
+    )
+
     class Meta:
         model = Tarifa
-        fields = ["description", "activity"]
+        fields = ["description", "activity", "activity_shortname"]
 
 
 class TarifaPagination(PageNumberPagination):

@@ -171,7 +171,13 @@ SIMPLE_JWT = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "DRF INSCRIPCIONES API",
     "DESCRIPTION": "Inscripciones para eventos",
-    "VERSION": "1.1.0",
+    "VERSION": "1.2.0",
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
+    "SWAGGER_UI_SETTINGS": {
+        "filter": True,
+        "filterMethods": True,
+        "deepLinking": True,
+        "docExpansion": "none",
+    },
 }
