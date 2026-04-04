@@ -21,7 +21,7 @@ class Activity(TimeStampedModel):
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
     settings = models.JSONField(blank=True, null=True, default=default_settings)
-    shortname = models.CharField(max_length=50, blank=True, null=True)
+    shortname = models.CharField(max_length=50, unique=True, blank=True, null=True)
 
     class Meta:
         db_table = "Activity"
