@@ -15,3 +15,11 @@ class ActivityView(viewsets.ModelViewSet):
     serializer_class = ActivitySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ActivityFilter
+
+
+@extend_schema(tags=["Tag"])
+class TagView(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    filter_backends = [DjangoFilterBackend]
+    # filterset_class = TagFilter # Define if needed, for now use default

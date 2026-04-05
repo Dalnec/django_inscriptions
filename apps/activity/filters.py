@@ -32,6 +32,9 @@ class ActivityFilter(django_filters.FilterSet):
         field_name="start_date", label="Rango de fecha de inicio (Desde/Hasta)"
     )
 
+    # 4. Filtrado por etiquetas (slugs)
+    tags = django_filters.CharFilter(field_name="tags__slug", lookup_expr="iexact", label="Etiqueta (slug)")
+
     class Meta:
         model = Activity
         fields = [
@@ -43,6 +46,7 @@ class ActivityFilter(django_filters.FilterSet):
             "is_active",
             # "settings",
             "shortname",
+            "tags",
         ]
 
     # Lógica para la búsqueda múltiple

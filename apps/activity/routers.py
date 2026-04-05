@@ -4,6 +4,7 @@ from .views import *
 
 router = DefaultRouter()
 router.register(r"activity", ActivityView, basename="activity")
+router.register(r"tag", TagView, basename="tag")
 
 urlpatterns = [
     path("", include(router.urls)),
