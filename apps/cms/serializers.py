@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import PageContent, MediaAsset
+
+from .models import MediaAsset, PageContent
 
 
 class MediaAssetSerializer(serializers.ModelSerializer):
@@ -7,8 +8,8 @@ class MediaAssetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MediaAsset
-        fields = ["id", "file", "original_filename", "url", "created_at"]
-        read_only_fields = ["id", "created_at"]
+        fields = ["id", "file", "original_filename", "url"]
+        read_only_fields = ["id"]
 
     def get_url(self, obj):
         if obj.file:
