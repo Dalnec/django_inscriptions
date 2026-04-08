@@ -19,8 +19,16 @@ urlpatterns = [
     path("", RedirectView.as_view(url=reverse_lazy("admin:index"))),
     # swagger
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path( "api/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui", ),
-    path( "api/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc", ),
+    path(
+        "api/schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path(
+        "api/schema/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
+    ),
     # Login
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
@@ -34,5 +42,6 @@ urlpatterns = [
     path("api/", include("apps.till.routers"), name="till"),
     path("api/", include("apps.seed.routers"), name="seed"),
     path("api/", include("apps.kenani.routers"), name="kenani"),
+    path("api/", include("apps.cms.routers"), name="cms"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
