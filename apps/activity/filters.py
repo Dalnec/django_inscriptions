@@ -1,4 +1,5 @@
 import django_filters
+from django.db import models
 from django.db.models.query_utils import Q
 from rest_framework.pagination import PageNumberPagination
 
@@ -33,7 +34,9 @@ class ActivityFilter(django_filters.FilterSet):
     )
 
     # 4. Filtrado por etiquetas (slugs)
-    tags = django_filters.CharFilter(field_name="tags__slug", lookup_expr="iexact", label="Etiqueta (slug)")
+    tags = django_filters.CharFilter(
+        field_name="tags__slug", lookup_expr="iexact", label="Etiqueta (slug)"
+    )
 
     class Meta:
         model = Activity
@@ -41,13 +44,16 @@ class ActivityFilter(django_filters.FilterSet):
             "title",
             "description",
             "location",
+            "location_text",
             "start_date",
             "end_date",
             "is_active",
-            # "settings",
             "shortname",
             "tags",
         ]
+        filter_overrides = {
+            models.JSONField: {"filter_class": django_filters.CharFilter},
+        }
 
     # Lógica para la búsqueda múltiple
     def filter_search(self, queryset, name, value):

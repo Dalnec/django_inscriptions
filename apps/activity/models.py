@@ -15,10 +15,18 @@ def default_settings():
     }
 
 
+def default_location_coords():
+    return {"lat": "", "lng": ""}
+
+
 class Tag(TimeStampedModel):
     name = models.CharField(max_length=50, unique=True, verbose_name="Nombre")
-    slug = models.SlugField(max_length=100, unique=True, verbose_name="Slug (URL Friendly)")
-    color = models.CharField(max_length=7, default="#3b82f6", verbose_name="Color (Hex)")
+    slug = models.SlugField(
+        max_length=100, unique=True, verbose_name="Slug (URL Friendly)"
+    )
+    color = models.CharField(
+        max_length=7, default="#3b82f6", verbose_name="Color (Hex)"
+    )
 
     class Meta:
         db_table = "Tag"
@@ -37,13 +45,26 @@ class Tag(TimeStampedModel):
 class Activity(TimeStampedModel):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    location = models.CharField(max_length=255, blank=True, null=True)
+    location = models.JSONField(
+        default=default_location_coords,
+        blank=True,
+        null=True,
+        verbose_name="Coordenadas de ubicación",
+    )
+    location_text = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name="Ubicación (texto)"
+    )
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
     settings = models.JSONField(blank=True, null=True, default=default_settings)
     shortname = models.CharField(max_length=50, unique=True, blank=True, null=True)
-    tags = models.ManyToManyField(Tag, blank=True, related_name="activities", verbose_name="Etiquetas")
+    logo = models.ImageField(
+        upload_to="activity/logos/", blank=True, null=True, verbose_name="Logo"
+    )
+    tags = models.ManyToManyField(
+        Tag, blank=True, related_name="activities", verbose_name="Etiquetas"
+    )
 
     class Meta:
         db_table = "Activity"
