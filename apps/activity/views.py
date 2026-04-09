@@ -11,7 +11,7 @@ from .serializers import *
 
 @extend_schema(tags=["Activity"])
 class ActivityView(viewsets.ModelViewSet):
-    queryset = Activity.objects.all()
+    queryset = Activity.objects.all().order_by("-id")
     serializer_class = ActivitySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ActivityFilter
