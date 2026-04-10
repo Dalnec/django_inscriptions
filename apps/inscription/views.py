@@ -95,7 +95,7 @@ class TarifaView(viewsets.GenericViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        serializer.save(status=instance.group.payment_status)
+        serializer.save()
         return Response(serializer.data)
     
     def destroy(self, request, pk=None):
