@@ -93,5 +93,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return (
-            f"{self.login_name} ({self.activity.shortname if self.activity else 'N/A'})"
+            f"{self.username} ({self.activity.shortname if self.activity else 'N/A'})"
         )

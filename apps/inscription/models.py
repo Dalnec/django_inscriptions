@@ -50,10 +50,11 @@ class Tarifa(TimeStampedModel):
 def path_and_rename(instance, filename):
     upload_to = "vouchers/"
     ext = filename.split(".")[-1]
+    tarifa_desc = instance.tarifa.description if instance.tarifa else "sin_tarifa"
     filename = "{}_{}_{}.{}".format(
         f"voucher_{instance.activity.id}",
         instance.vouchergroup,
-        instance.tarifa.description,
+        tarifa_desc,
         ext,
     )
     return upload_to + filename

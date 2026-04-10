@@ -29,12 +29,10 @@ class UserView(viewsets.ModelViewSet):
     filterset_class = UserFilter
     pagination_class = UserPagination
 
-    def create(self, request):
-        serializer = UserSerializer(data=request.data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = User.objects.create(**serializer.validated_data)
-        user.set_password(request.data["password"])
-        user.save()
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None):
