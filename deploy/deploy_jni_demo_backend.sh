@@ -5,6 +5,7 @@ APP_DIR="/home/tsi/dl/jni-inscriptions-demo"
 BRANCH="${1:-codexdeploy}"
 
 cd "$APP_DIR/django_inscriptions"
+pwd
 git fetch origin --prune
 
 if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
