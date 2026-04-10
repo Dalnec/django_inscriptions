@@ -22,6 +22,13 @@ class Concept(TimeStampedModel):
     )
     is_active = models.BooleanField(default=True)
     is_internal = models.BooleanField(default=False)
+    activity = models.ForeignKey(
+        "activity.Activity",
+        on_delete=models.PROTECT,
+        related_name="concept_activities",
+        null=True,
+        blank=True
+    )
 
     class Meta:
         verbose_name = "Concepto"
