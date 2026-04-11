@@ -33,6 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
             "profile_description",
             "permissions",
             "activity",
+            "is_staff",
         )
         extra_kwargs = {
             "password": {"read_only": True},  # Cambiado a write_only por seguridad
