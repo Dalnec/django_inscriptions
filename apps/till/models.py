@@ -13,7 +13,7 @@ class ConceptType(models.TextChoices):
 
 
 class Concept(TimeStampedModel):
-    description = models.CharField("Descripcion", max_length=150, unique=True)
+    description = models.CharField("Descripcion", max_length=150)
     concept_type = models.CharField(
         "Tipo de Concepto",
         max_length=1,
@@ -34,6 +34,13 @@ class Concept(TimeStampedModel):
         verbose_name = "Concepto"
         verbose_name_plural = "Conceptos"
         db_table = "Concept"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["description", "activity"],
+                name="unique_concept_activity",
+                nulls_distinct=False,
+            )
+        ]
 
     def __str__(self):
         return self.description
