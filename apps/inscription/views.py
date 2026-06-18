@@ -11,6 +11,7 @@ from django.db import transaction
 from .models import *
 from .serializers import *
 from .filters import *
+from .permissions import IsAdministrador
 
 
 @extend_schema(tags=["PaymentMethod"])
@@ -146,17 +147,15 @@ class InscriptionView(viewsets.GenericViewSet):
         serializer.save()
         return Response(serializer.data)
     
+    def get_permissions(self):
+        if self.action == 'destroy':
+            return [IsAdministrador()]
+        return super().get_permissions()
+
     def destroy(self, request, pk=None):
         instance = self.get_object()
-        print(request.user)
-        if request.user.is_authenticated and request.user.profile.descripcion.upper() == "ADMINISTRADOR":
-            instance.delete()
-            return Response({"message": "Inscripcion eliminada con exito"}, status=status.HTTP_200_OK)
-        
-        return Response(
-            {"message": "No tiene permisos para realizar esta accion"},
-            status=status.HTTP_403_FORBIDDEN,
-        )
+        instance.delete()
+        return Response({"message": "Inscripcion eliminada con exito"}, status=status.HTTP_200_OK)
     
     @action(detail=True, methods=['post'], serializer_class=InscriptionSendEmailSerializer, url_path='send-email')
     def send_email(self, request, pk=None, *args, **kwargs):
