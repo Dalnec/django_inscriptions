@@ -148,7 +148,7 @@ class InscriptionView(viewsets.GenericViewSet):
     
     def destroy(self, request, pk=None):
         instance = self.get_object()
-        
+        print(request.user)
         if request.user.is_authenticated and request.user.profile.descripcion.upper() == "ADMINISTRADOR":
             instance.delete()
             return Response({"message": "Inscripcion eliminada con exito"}, status=status.HTTP_200_OK)
