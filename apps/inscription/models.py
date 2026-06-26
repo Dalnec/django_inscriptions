@@ -130,6 +130,7 @@ class Inscription(TimeStampedModel):
         max_length=1, choices=STATUS_INSCRIPTION, blank=True, null=True
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    is_active = models.BooleanField(default=True)
     observations = models.CharField(max_length=255, blank=True, null=True)
     group = models.ForeignKey(
         "InscriptionGroup", models.CASCADE, related_name="fk_InscriptionGroup"

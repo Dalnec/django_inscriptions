@@ -1,11 +1,15 @@
 import re
-from rest_framework import generics, viewsets, status
+from rest_framework import generics, serializers, viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.inscription.functions import send_voucher_email
-from apps.inscription.services import confirm_group_payment, reject_group_payment
+from apps.inscription.services import (
+    confirm_group_payment,
+    delete_inscription,
+    reject_group_payment,
+)
 from django.db import transaction
 
 from .models import *
@@ -154,8 +158,14 @@ class InscriptionView(viewsets.GenericViewSet):
 
     def destroy(self, request, pk=None):
         instance = self.get_object()
-        instance.delete()
-        return Response({"message": "Inscripcion eliminada con exito"}, status=status.HTTP_200_OK)
+        try:
+            delete_inscription(instance)
+            return Response(
+                {"message": "Inscripcion eliminada con exito"},
+                status=status.HTTP_200_OK,
+            )
+        except serializers.ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=True, methods=['post'], serializer_class=InscriptionSendEmailSerializer, url_path='send-email')
     def send_email(self, request, pk=None, *args, **kwargs):

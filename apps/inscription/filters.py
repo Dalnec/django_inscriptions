@@ -16,6 +16,7 @@ class InscriptionFilter(django_filters.FilterSet):
     payment_status = django_filters.CharFilter(
         field_name="group__payment_status", lookup_expr="exact"
     )
+    is_active = django_filters.BooleanFilter(field_name="is_active")
 
     class Meta:
         model = Inscription
@@ -29,7 +30,13 @@ class InscriptionFilter(django_filters.FilterSet):
             "search",
             "church",
             "payment_status",
+            "is_active",
         ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if "is_active" not in self.data:
+            self.queryset = self.queryset.filter(is_active=True)
 
     def search_filter(self, queryset, name, value):
         if value:

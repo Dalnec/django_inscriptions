@@ -194,3 +194,8 @@ class Movement(TimeStampedModel):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+    
+    @property
+    def available_amount(self):
+        from .services import get_cash_balance
+        return get_cash_balance(activity=self.activity)
