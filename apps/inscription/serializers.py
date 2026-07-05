@@ -31,7 +31,7 @@ class InscriptionGroupCreateSerializer(serializers.ModelSerializer):
         # Si la persona ya se encuentra registada en la actividad actual, no se debe crear una nueva inscripción
         already_registered = []
         for person in people_data:
-            if Inscription.objects.filter(person__doc_num=person["doc_num"], group__activity=validated_data["activity"]).exists():
+            if Inscription.objects.filter(person__doc_num=person["doc_num"], group__activity=validated_data["activity"], is_active=True).exists():
                 already_registered.append(f"{person['doc_num']} {person['names']} {person['lastnames']}")
         if already_registered:
             raise serializers.ValidationError(f"Las siguientes personas ya están registradas en el evento actual: {', '.join(already_registered)}")
