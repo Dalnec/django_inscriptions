@@ -66,7 +66,7 @@ def update_urls(data, request, scheme='https'):
 
 class HTTPSRenderer(JSONRenderer):
     def render(self, data, accepted_media_type=None, renderer_context=None):
-        request = renderer_context.get('request')
+        request = renderer_context.get('request') if renderer_context else None
         scheme = 'https'
 
         data = update_urls(data, request, scheme)

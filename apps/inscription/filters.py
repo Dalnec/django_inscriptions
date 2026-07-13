@@ -49,12 +49,6 @@ class InscriptionFilter(django_filters.FilterSet):
         return queryset
 
 
-class InscriptionPagination(PageNumberPagination):
-    page_size_query_param = "page_size"
-    # max_page_size = 100
-    page_size = 20
-
-
 class InscriptionGroupFilter(django_filters.FilterSet):
     class Meta:
         model = InscriptionGroup

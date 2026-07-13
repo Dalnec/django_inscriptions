@@ -80,8 +80,8 @@ class Activity(TimeStampedModel):
 
     @property
     def send_email(self):
-        return self.settings.get("inscription", {}).get("send_email", False)
+        return self.settings.get("inscription", {}).get("send_email", False) if self.settings else False
 
     @property
     def emails(self):
-        return self.settings.get("inscription", {}).get("emails", [])
+        return self.settings.get("inscription", {}).get("emails", []) if self.settings else []

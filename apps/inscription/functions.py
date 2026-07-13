@@ -14,8 +14,8 @@ def send_voucher_email(group, to_email):
             'date': group.created
         },
         'inscriptions': group.fk_InscriptionGroup.all(),
-        'tarifa': group.tarifa.description,
-        'payment_method': group.paymentmethod.description,
+        'tarifa': group.tarifa.description if group.tarifa else 'N/A',
+        'payment_method': group.paymentmethod.description if group.paymentmethod else 'N/A',
         'total_amount': group.voucheramount
     }
 
