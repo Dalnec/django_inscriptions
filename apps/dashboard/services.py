@@ -340,12 +340,6 @@ def get_groups_stats(activity):
         for item in by_status
     }
 
-    avg_size = (
-        Inscription.objects.filter(
-            group__activity=activity, is_active=True
-        ).aggregate(avg=Avg(Count("group")))
-    )
-    # Need to compute average inscriptions per group
     group_sizes = (
         Inscription.objects.filter(group__activity=activity, is_active=True)
         .values("group_id")
