@@ -43,5 +43,6 @@ urlpatterns = [
     path("api/", include("apps.seed.routers"), name="seed"),
     path("api/", include("apps.kenani.routers"), name="kenani"),
     path("api/", include("apps.cms.routers"), name="cms"),
+    path("api/", include("apps.dashboard.urls"), name="dashboard"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

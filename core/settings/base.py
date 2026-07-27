@@ -29,6 +29,7 @@ LOCAL_APPS = [
     "apps.user",
     "apps.till",
     "apps.cms",
+    "apps.dashboard",
 ]
 
 THIRD_APPS = [
